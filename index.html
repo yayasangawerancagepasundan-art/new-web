@@ -705,10 +705,252 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+
+
+
+/* POP-UP INSTALASI PWA */
+
+.install-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,25,13,.72);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.install-overlay.show {
+  display: flex;
+  animation: installFade .35s ease;
+}
+
+@keyframes installFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.install-popup {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 30px 25px 25px;
+  border-radius: 25px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 20px 65px rgba(0,0,0,.3);
+  animation: installUp .4s ease;
+}
+
+@keyframes installUp {
+  from { opacity: 0; transform: translateY(25px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.install-logo {
+  width: 105px;
+  height: 105px;
+  padding: 8px;
+  margin: 0 auto 17px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e5ebe7;
+  box-shadow: 0 5px 20px rgba(0,70,30,.12);
+}
+
+.install-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.install-popup h2 {
+  color: #07552c;
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.install-subtitle {
+  color: #087b39;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.install-description {
+  color: #53635a;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.install-benefits {
+  background: #edf7f0;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.install-benefit {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 10px 0;
+  color: #145b32;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.install-benefit svg {
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+  stroke: #087b39;
+  fill: none;
+  stroke-width: 2;
+}
+
+.install-button {
+  width: 100%;
+  min-height: 53px;
+  border: 0;
+  border-radius: 30px;
+  background: linear-gradient(110deg,#078d3e,#00612e);
+  color: white;
+  font-size: 17px;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,100,40,.2);
+}
+
+.install-button:hover {
+  filter: brightness(1.08);
+}
+
+.install-later {
+  margin-top: 17px;
+  border: 0;
+  background: transparent;
+  color: #68766e;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 15px;
+}
+
+.install-help {
+  display: none;
+  margin-top: 13px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff8e6;
+  color: #765817;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+@media (max-width:480px) {
+  .install-popup {
+    padding: 25px 19px 20px;
+    border-radius: 22px;
+  }
+  .install-logo {
+    width: 90px;
+    height: 90px;
+  }
+  .install-popup h2 {
+    font-size: 22px;
+  }
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- POP-UP INSTALASI PWA -->
+
+<div class="install-overlay" id="installOverlay">
+
+  <div class="install-popup">
+
+    <div class="install-logo">
+      <img
+        src="./logo-yayasan.png"
+        alt="Logo Yayasan Gawe Rancage Pasundan"
+      >
+    </div>
+
+    <h2>Pasang Aplikasi SPPG</h2>
+
+    <p class="install-subtitle">
+      Yayasan Gawe Rancage Pasundan
+    </p>
+
+    <p class="install-description">
+      Akses Sistem Pelaporan Keuangan Dapur SPPG
+      lebih cepat dan praktis. Pasang aplikasi
+      di perangkat Anda agar mudah digunakan.
+    </p>
+
+    <div class="install-benefits">
+
+      <div class="install-benefit">
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+        </svg>
+        Bisa digunakan di komputer dan HP
+      </div>
+
+      <div class="install-benefit">
+        <svg viewBox="0 0 24 24">
+          <path d="M13 2 3 14h8l-1 8 11-13h-8z"/>
+        </svg>
+        Akses langsung dari layar utama
+      </div>
+
+      <div class="install-benefit">
+        <svg viewBox="0 0 24 24">
+          <rect x="5" y="2" width="14" height="20" rx="2"/>
+          <path d="M9 18h6"/>
+        </svg>
+        Tampilan seperti aplikasi asli
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="install-button"
+      id="installButton"
+    >
+      + Pasang Aplikasi
+    </button>
+
+    <div class="install-help" id="installHelp"></div>
+
+    <button
+      type="button"
+      class="install-later"
+      id="installLater"
+    >
+      Mungkin Nanti
+    </button>
+
+  </div>
+
+</div>
+
+
 
 <!-- HALAMAN LOGIN -->
 
@@ -1341,6 +1583,125 @@ if ("serviceWorker" in navigator) {
   });
 
 }
+
+
+
+/* PENGELOLAAN POP-UP INSTALASI PWA */
+
+let deferredInstallPrompt = null;
+
+const installOverlay = document.getElementById("installOverlay");
+const installButton = document.getElementById("installButton");
+const installLater = document.getElementById("installLater");
+const installHelp = document.getElementById("installHelp");
+
+const INSTALL_DELAY = 7 * 24 * 60 * 60 * 1000;
+
+function isAppInstalled() {
+  return window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    window.navigator.standalone === true;
+}
+
+function canShowInstallPopup() {
+  if (isAppInstalled()) return false;
+
+  try {
+    const dismissedAt = localStorage.getItem("sppg_install_dismissed");
+
+    if (!dismissedAt) return true;
+
+    return Date.now() - Number(dismissedAt) >= INSTALL_DELAY;
+  } catch (error) {
+    return true;
+  }
+}
+
+function showInstallPopup() {
+  if (!installOverlay || !canShowInstallPopup()) return;
+  installOverlay.classList.add("show");
+}
+
+function closeInstallPopup() {
+  if (installOverlay) installOverlay.classList.remove("show");
+}
+
+installLater.addEventListener("click", function() {
+  try {
+    localStorage.setItem("sppg_install_dismissed", String(Date.now()));
+  } catch (error) {
+    console.warn("Preferensi pop-up tidak dapat disimpan.");
+  }
+
+  closeInstallPopup();
+});
+
+window.addEventListener("beforeinstallprompt", function(event) {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+
+  installButton.textContent = "+ Pasang Aplikasi";
+  installHelp.style.display = "none";
+});
+
+installButton.addEventListener("click", async function() {
+  if (!deferredInstallPrompt) {
+    const userAgent = navigator.userAgent || "";
+    const isIOS = /iphone|ipad|ipod/i.test(userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    if (isIOS) {
+      installHelp.innerHTML =
+        "Untuk memasang aplikasi di iPhone atau iPad:<br>" +
+        "1. Buka halaman ini melalui Safari.<br>" +
+        "2. Tekan tombol <b>Share</b>.<br>" +
+        "3. Pilih <b>Add to Home Screen</b>.<br>" +
+        "4. Tekan <b>Add</b>.";
+    } else {
+      installHelp.innerHTML =
+        "Browser belum menyediakan tombol instalasi otomatis. " +
+        "Untuk memasang aplikasi, buka menu browser (tiga titik), " +
+        "lalu cari pilihan <b>Install app</b>, <b>Install page as app</b>, " +
+        "atau <b>Tambahkan ke layar utama</b>.";
+    }
+
+    installHelp.style.display = "block";
+    return;
+  }
+
+  try {
+    deferredInstallPrompt.prompt();
+
+    const choice = await deferredInstallPrompt.userChoice;
+
+    if (choice && choice.outcome === "accepted") {
+      closeInstallPopup();
+    }
+
+    deferredInstallPrompt = null;
+  } catch (error) {
+    console.error("Instalasi gagal:", error);
+    installHelp.textContent =
+      "Instalasi belum dapat dilakukan. Silakan coba melalui menu browser.";
+    installHelp.style.display = "block";
+    deferredInstallPrompt = null;
+  }
+});
+
+window.addEventListener("appinstalled", function() {
+  closeInstallPopup();
+  deferredInstallPrompt = null;
+
+  try {
+    localStorage.removeItem("sppg_install_dismissed");
+  } catch (error) {
+    console.warn("Status instalasi tidak dapat diperbarui.");
+  }
+});
+
+window.addEventListener("load", function() {
+  window.setTimeout(showInstallPopup, 700);
+});
 
 </script>
 
