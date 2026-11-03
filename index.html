@@ -3,730 +3,713 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#073b2b">
-  <meta name="description" content="Sistem Pelaporan Keuangan Dapur SPPG - Yayasan Gawe Rancage Pasundan">
-  <title>Masuk | Sistem Pelaporan Keuangan Dapur SPPG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#087b39">
+
+  <title>Login - Sistem Pelaporan Keuangan Dapur SPPG</title>
 
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" href="./logo-yayasan.png" type="image/png">
 
   <style>
     :root {
-      --green-950: #062d22;
-      --green-900: #073b2b;
-      --green-800: #0b5138;
-      --green-700: #126b47;
-      --green-600: #168454;
-      --green-100: #e8f4ec;
-      --gold: #d6b65f;
-      --ink: #183329;
-      --muted: #77877f;
-      --line: #dfe9e2;
-      --white: #fff;
+      --green: #087b39;
+      --green-dark: #034c2b;
+      --green-deep: #023b25;
+      --gold: #e8bd35;
+      --white: #ffffff;
+      --text: #17251d;
+      --muted: #64736a;
+      --border: #d5ded9;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     html {
-      min-height: 100%;
-      background: #f2f6f2;
+      scroll-behavior: auto;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      min-height: 100svh;
-      font-family: Inter, system-ui, -apple-system,
-        "Segoe UI", sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(
-          ellipse at 12% 90%,
-          rgba(214,182,95,.12),
-          transparent 34%
-        ),
-        linear-gradient(135deg,#f4f7f4,#edf3ee);
-      display: grid;
-      place-items: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: #edf4ef;
+    }
+
+    /* BACKGROUND HALAMAN */
+
+    .page-background {
+      min-height: 100vh;
       padding: 24px;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    .app-shell {
-      width: min(1180px,100%);
-      min-height: 690px;
-      background: var(--white);
-      border-radius: 28px;
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 1.08fr .92fr;
-      box-shadow: 0 28px 90px rgba(9,49,33,.14);
-      border: 1px solid rgba(9,64,42,.06);
-    }
-
-    /* PANEL IDENTITAS */
-
-    .brand-panel {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      padding: 36px 44px 30px;
-      color: #fff;
-      background:
-        radial-gradient(
-          ellipse at 5% 85%,
-          rgba(190,220,111,.22),
-          transparent 30%
-        ),
-        radial-gradient(
-          ellipse at 100% 0%,
-          rgba(47,147,94,.30),
-          transparent 36%
-        ),
-        linear-gradient(
-          145deg,
-          var(--green-950),
-          #0b573a 72%,
-          #126c48
-        );
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .brand-panel:before,
-    .brand-panel:after {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .brand-panel:before {
-      width: 570px;
-      height: 570px;
-      right: -330px;
-      top: -270px;
-      box-shadow:
-        0 0 0 45px rgba(255,255,255,.025),
-        0 0 0 95px rgba(255,255,255,.018);
-    }
-
-    .brand-panel:after {
-      width: 370px;
-      height: 370px;
-      left: -245px;
-      bottom: -240px;
-      box-shadow: 0 0 0 35px rgba(255,255,255,.025);
-    }
-
-    .top-brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .brand-symbol {
-      height: 54px;
-      width: 54px;
-      display: grid;
-      place-items: center;
-      border-radius: 17px;
-      background: linear-gradient(145deg,#e5f1bd,#b8d66e);
-      color: #0b422e;
-      box-shadow: 0 9px 25px rgba(0,0,0,.18);
-    }
-
-    .brand-symbol svg {
-      width: 34px;
-      height: 34px;
-    }
-
-    .brand-title {
-      font-size: 17px;
-      letter-spacing: .13em;
-      font-weight: 850;
-    }
-
-    .brand-subtitle {
-      font-size: 9px;
-      letter-spacing: .19em;
-      color: #c3ddce;
-      margin-top: 4px;
-    }
-
-    .hero {
-      position: relative;
-      z-index: 1;
-      max-width: 520px;
-      margin: 52px 0 42px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      color: #d6e8a4;
-      font-size: 10px;
-      letter-spacing: .22em;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .eyebrow:before {
-      content: "";
-      width: 24px;
-      height: 2px;
-      background: var(--gold);
-    }
-
-    h1 {
-      font-size: clamp(36px,4.5vw,57px);
-      line-height: 1.04;
-      letter-spacing: -.055em;
-      margin: 18px 0;
-      font-weight: 820;
-      max-width: 520px;
-    }
-
-    .hero-copy {
-      font-size: 14px;
-      line-height: 1.85;
-      color: #d1e3d8;
-      max-width: 440px;
-      margin: 0;
-    }
-
-    .system-label {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-top: 34px;
-      padding: 15px 17px;
-      border: 1px solid rgba(255,255,255,.19);
-      border-left: 3px solid var(--gold);
-      border-radius: 15px;
-      background: rgba(255,255,255,.085);
-      backdrop-filter: blur(8px);
-      max-width: 450px;
-    }
-
-    .system-icon {
-      width: 46px;
-      height: 46px;
-      flex: 0 0 46px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(145deg,#1b9a5c,#0a5839);
-      border: 1px solid rgba(255,255,255,.24);
-    }
-
-    .system-icon svg {
-      width: 25px;
-      height: 25px;
-    }
-
-    .system-label strong {
-      display: block;
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    .system-label span {
-      display: block;
-      font-size: 10px;
-      color: #c8dfd1;
-      margin-top: 3px;
-    }
-
-    /* MENU INFORMASI */
-
-    .module-list {
-      display: grid;
-      grid-template-columns: repeat(5,1fr);
-      gap: 8px;
-      margin-top: 28px;
-      max-width: 500px;
-    }
-
-    .module {
-      min-width: 0;
-      text-align: center;
-      padding: 10px 4px 8px;
-      border-right: 1px solid rgba(255,255,255,.18);
-    }
-
-    .module:last-child {
-      border-right: 0;
-    }
-
-    .module-icon {
-      height: 37px;
-      width: 37px;
-      margin: 0 auto 8px;
-      border-radius: 11px;
-      background: rgba(255,255,255,.13);
-      border: 1px solid rgba(255,255,255,.22);
-      display: grid;
-      place-items: center;
-      color: #d9edaa;
-    }
-
-    .module-icon svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .module span {
-      font-size: 9px;
-      line-height: 1.4;
-      color: #e5f0e9;
-      display: block;
-    }
-
-    .panel-footer {
-      position: relative;
-      z-index: 1;
-      padding-top: 17px;
-      border-top: 1px solid rgba(255,255,255,.16);
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: #bad4c5;
-      font-size: 10px;
-    }
-
-    .panel-footer strong {
-      color: #fff;
-      font-weight: 650;
-    }
-
-    /* PANEL LOGIN */
-
-    .login-panel {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 54px 58px;
-      background: linear-gradient(155deg,#fff,#fbfdfb);
+
+      background:
+        linear-gradient(
+          rgba(0, 65, 34, 0.13),
+          rgba(0, 65, 34, 0.13)
+        ),
+        url("./background-sppg.png");
+
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
-    .login-card {
+    /* PANEL UTAMA */
+
+    .login-container {
       width: 100%;
-      max-width: 390px;
+      max-width: 850px;
+      padding: 25px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 18px 55px rgba(0, 35, 17, 0.22);
+      backdrop-filter: blur(12px);
+      animation: appear 0.7s ease;
     }
 
-    .login-logo {
-      height: 64px;
-      width: 64px;
-      border-radius: 21px;
-      margin-bottom: 27px;
-      background: linear-gradient(145deg,#e8f4e9,#d4ebd9);
-      display: grid;
-      place-items: center;
-      color: var(--green-800);
-      box-shadow: inset 0 0 0 1px #d8eadc;
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .login-logo svg {
-      width: 39px;
-      height: 39px;
+    /* LOGO */
+
+    .logo-area {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
     }
 
-    .login-kicker {
-      font-size: 10px;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--green-700);
-      font-weight: 850;
+    .logo-white {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 9px;
+      box-shadow: 0 5px 22px rgba(0, 0, 0, 0.12);
     }
 
-    h2 {
-      font-size: 32px;
-      letter-spacing: -.045em;
-      margin: 11px 0 8px;
+    .logo-white img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    /* JUDUL */
+
+    .brand-title {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .brand-title h1 {
+      font-size: clamp(23px, 4vw, 34px);
       font-weight: 800;
-      color: #17372a;
+      line-height: 1.2;
+      color: #101d16;
     }
 
-    .login-intro {
-      font-size: 12px;
-      line-height: 1.7;
-      color: var(--muted);
-      margin: 0 0 31px;
+    .foundation-ribbon {
+      display: inline-block;
+      margin-top: 13px;
+      padding: 10px 28px;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 30px;
+      background: linear-gradient(
+        100deg,
+        #006b32,
+        #079644,
+        #006b32
+      );
+      box-shadow: 0 4px 12px rgba(0, 100, 44, 0.2);
+      position: relative;
     }
 
-    .field {
-      margin-bottom: 19px;
+    .brand-description {
+      max-width: 580px;
+      margin: 15px auto 20px;
+      text-align: center;
+      color: #34483b;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
-    .field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 750;
-      color: #30483b;
+    /* FITUR DAN IKON SVG */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .feature-card {
+      min-width: 0;
+      padding: 14px 7px 12px;
+      border: 1px solid #e2eae5;
+      border-radius: 17px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 4px 13px rgba(0, 45, 20, 0.08);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0, 75, 35, 0.14);
+    }
+
+    .feature-card svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--green);
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
       margin-bottom: 8px;
     }
 
-    .input-wrap {
+    .feature-card span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 650;
+      color: #1d2b22;
+    }
+
+    /* FORM LOGIN */
+
+    .login-form {
+      max-width: 650px;
+      margin: 20px auto 0;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid #e7ede9;
+      border-radius: 22px;
+      box-shadow: 0 7px 22px rgba(0, 45, 20, 0.12);
+    }
+
+    .input-group {
       position: relative;
+      margin-bottom: 15px;
+    }
+
+    .input-group input {
+      width: 100%;
+      height: 58px;
+      padding: 0 48px 0 58px;
+      border: 1.7px solid #cbd6d0;
+      border-radius: 16px;
+      background: #fff;
+      font-size: 16px;
+      color: #1c2c22;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(8, 123, 57, 0.1);
+    }
+
+    .input-group input::placeholder {
+      color: #89958e;
     }
 
     .input-icon {
       position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #81948a;
-      display: flex;
+      left: 17px;
+      top: 17px;
+      width: 24px;
+      height: 24px;
+      color: #536a5b;
       pointer-events: none;
     }
 
-    .input-icon svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .input-wrap input {
-      width: 100%;
-      height: 53px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #fbfdfb;
-      padding: 0 48px 0 45px;
-      outline: none;
-      color: var(--ink);
-      font-size: 13px;
-      transition: .18s;
-    }
-
-    .input-wrap input::placeholder {
-      color: #a2aea7;
-    }
-
-    .input-wrap input:focus {
-      border-color: #4b9b70;
-      box-shadow: 0 0 0 4px rgba(22,132,84,.10);
-      background: #fff;
-    }
-
-    .password-toggle {
+    .toggle-password {
       position: absolute;
-      right: 9px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 35px;
-      height: 35px;
-      border: 0;
+      right: 15px;
+      top: 15px;
+      border: none;
       background: transparent;
-      color: #7e9086;
-      display: grid;
-      place-items: center;
       cursor: pointer;
-      border-radius: 8px;
+      color: #506257;
+      padding: 4px;
     }
 
-    .password-toggle:hover {
-      background: #eef5ef;
-      color: var(--green-700);
-    }
-
-    .password-toggle svg {
-      width: 18px;
-      height: 18px;
+    .toggle-password svg {
+      width: 24px;
+      height: 24px;
     }
 
     .form-options {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin: 4px 0 25px;
-      font-size: 11px;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 8px 0 22px;
+      font-size: 14px;
     }
 
     .remember {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #64756b;
       cursor: pointer;
     }
 
     .remember input {
-      width: 15px;
-      height: 15px;
-      margin: 0;
-      accent-color: var(--green-700);
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
     }
 
-    .forgot {
-      color: var(--green-700);
-      text-decoration: none;
-      font-weight: 750;
-    }
-
-    .forgot:hover {
+    .forgot-link {
+      color: var(--green);
+      font-weight: 650;
       text-decoration: underline;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 14px;
     }
+
+    /* TOMBOL MASUK */
 
     .login-button {
       width: 100%;
-      height: 53px;
-      border: 0;
-      border-radius: 12px;
-      color: #fff;
-      background: linear-gradient(100deg,#0b603e,#168454);
-      font-weight: 800;
-      font-size: 13px;
+      height: 62px;
+      border: none;
+      border-radius: 35px;
+      color: white;
+      background: linear-gradient(
+        110deg,
+        #078d3e,
+        #00612e
+      );
+      font-size: 21px;
+      font-weight: 750;
       cursor: pointer;
-      box-shadow: 0 10px 22px rgba(15,105,66,.20);
-      transition: .18s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 13px;
+      box-shadow: 0 5px 14px rgba(0, 100, 40, 0.22);
+      transition: 0.2s;
     }
 
     .login-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 13px 25px rgba(15,105,66,.25);
+      filter: brightness(1.08);
+      transform: translateY(-2px);
     }
 
     .login-button:disabled {
-      opacity: .65;
-      cursor: wait;
+      opacity: 0.7;
+      cursor: not-allowed;
       transform: none;
     }
 
-    .login-button span {
-      margin-left: 8px;
-      font-size: 17px;
+    .login-button svg {
+      width: 27px;
+      height: 27px;
     }
 
     .status-message {
       display: none;
-      margin-top: 14px;
-      padding: 11px 13px;
+      margin-top: 15px;
+      padding: 12px;
       border-radius: 10px;
-      font-size: 11px;
-      line-height: 1.55;
-    }
-
-    .status-message.info {
-      display: block;
-      background: #eef6f0;
-      color: #286143;
-      border: 1px solid #dcece0;
+      font-size: 13px;
+      text-align: center;
     }
 
     .status-message.error {
       display: block;
-      background: #fff1ef;
-      color: #a43d32;
-      border: 1px solid #f3d8d4;
+      color: #a52222;
+      background: #fff0f0;
     }
 
     .status-message.success {
       display: block;
-      background: #eef8f0;
-      color: #23643c;
-      border: 1px solid #d8eddd;
+      color: #087238;
+      background: #eaf8ef;
     }
 
-    .security-note {
+    .footer-text {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #65736b;
+    }
+
+    /* LOADING SCREEN */
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      overflow-y: auto;
+      background:
+        radial-gradient(
+          circle at 50% 35%,
+          #087c43 0%,
+          #034e30 45%,
+          #012f20 100%
+        );
+      color: white;
+    }
+
+    .loading-screen.active {
+      display: flex;
+      animation: fadeIn 0.45s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .loading-content {
+      width: 100%;
+      max-width: 510px;
+      text-align: center;
+      position: relative;
+      padding: 20px 0;
+    }
+
+    .loading-logo-area {
+      width: 245px;
+      height: 245px;
+      margin: 0 auto 20px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-logo {
+      width: 172px;
+      height: 172px;
+      border-radius: 50%;
+      background: white;
+      padding: 12px;
+      z-index: 2;
+      box-shadow: 0 0 35px rgba(255, 255, 255, 0.16);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    /* LINGKARAN CAHAYA SVG */
+
+    .orbit {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      animation: rotateOrbit 8s linear infinite;
+    }
+
+    @keyframes rotateOrbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .orbit-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.12);
+      stroke-width: 2;
+    }
+
+    .orbit-green {
+      fill: none;
+      stroke: #43ff8c;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 180 520;
+      filter: drop-shadow(0 0 7px #43ff8c);
+      animation: orbitDash 3s linear infinite;
+    }
+
+    .orbit-gold {
+      fill: none;
+      stroke: #f3d45a;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 95 600;
+      filter: drop-shadow(0 0 7px #f3d45a);
+      animation: orbitDash 4s linear infinite reverse;
+    }
+
+    @keyframes orbitDash {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -700; }
+    }
+
+    .loading-title {
+      font-size: 35px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .loading-subtitle {
+      font-size: 17px;
+      color: #d8f1e1;
+      margin-bottom: 30px;
+    }
+
+    .loading-steps {
+      width: 100%;
+      padding: 25px;
+      border: 1px solid rgba(135, 236, 177, 0.28);
+      border-radius: 23px;
+      background: rgba(0, 40, 24, 0.24);
+      text-align: left;
+      backdrop-filter: blur(8px);
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-height: 52px;
+      color: #b6c9bd;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    .step-indicator {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      margin-top: 23px;
-      color: #91a097;
-      font-size: 10px;
     }
 
-    .security-note svg {
-      width: 14px;
-      height: 14px;
-      color: var(--green-700);
+    .loading-step.done {
+      color: white;
     }
 
-    .copyright {
-      text-align: center;
-      color: #a2ada6;
-      font-size: 9px;
-      margin-top: 43px;
-      line-height: 1.6;
+    .loading-step.done .step-indicator {
+      background: #12bf48;
+      border-color: #12bf48;
     }
 
-    .install-button {
+    .loading-step.done .step-indicator svg {
+      width: 20px;
+      height: 20px;
+      stroke: white;
+      stroke-width: 3;
+    }
+
+    .loading-step.current {
+      color: white;
+      font-weight: 700;
+    }
+
+    .loading-step.current .step-indicator {
+      border: 4px dotted #73ffa1;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-step.pending .step-indicator {
+      background: rgba(255,255,255,0.18);
+    }
+
+    .loading-line {
+      height: 16px;
+      width: 3px;
+      background: rgba(255,255,255,0.55);
+      margin-left: 15px;
+    }
+
+    .loading-error {
       display: none;
-      width: 100%;
-      margin-top: 19px;
-      padding: 12px 14px;
-      border: 1px solid #dcebe0;
-      border-radius: 12px;
-      background: #f0f8f2;
-      color: #205d3d;
-      text-align: left;
+      margin-top: 18px;
+      padding: 12px;
+      color: #fff;
+      background: rgba(150, 20, 20, 0.5);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .loading-error button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: 1px solid white;
+      border-radius: 20px;
+      background: transparent;
+      color: white;
       cursor: pointer;
-    }
-
-    .install-button.visible {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .install-button svg {
-      width: 24px;
-      height: 24px;
-      flex: 0 0 24px;
-    }
-
-    .install-button strong {
-      display: block;
-      font-size: 11px;
-    }
-
-    .install-button small {
-      display: block;
-      color: #6d8777;
-      font-size: 9px;
-      margin-top: 3px;
-    }
-
-    .mobile-brand {
-      display: none;
     }
 
     /* RESPONSIVE HP */
 
-    @media(max-width:800px) {
-      body {
-        display: block;
-        padding: 0;
-        background: #fff;
-      }
-
-      .app-shell {
-        width: 100%;
-        min-height: 100svh;
-        border: 0;
-        border-radius: 0;
-        display: flex;
-        flex-direction: column;
-        box-shadow: none;
-      }
-
-      .brand-panel {
-        padding: 24px 25px 25px;
-        min-height: 255px;
-        border-radius: 0 0 25px 25px;
-      }
-
-      .brand-symbol {
-        height: 44px;
-        width: 44px;
-      }
-
-      .brand-title {
-        font-size: 15px;
-      }
-
-      .brand-subtitle {
-        font-size: 8px;
-      }
-
-      .hero {
-        margin: 29px 0 0;
-      }
-
-      h1 {
-        font-size: 32px;
-        margin: 12px 0 10px;
-      }
-
-      .hero-copy {
-        font-size: 11px;
-        line-height: 1.6;
-      }
-
-      .system-label,
-      .module-list,
-      .panel-footer {
-        display: none;
-      }
-
-      .login-panel {
-        padding: 34px 27px 27px;
+    @media (max-width: 650px) {
+      .page-background {
+        padding: 12px;
         align-items: flex-start;
-        flex: 1;
       }
 
-      .login-card {
-        max-width: 460px;
-        margin: 0 auto;
+      .login-container {
+        padding: 17px 13px;
+        margin: 8px 0;
+        border-radius: 19px;
       }
 
-      .login-logo {
-        display: none;
+      .logo-white {
+        width: 112px;
+        height: 112px;
       }
 
-      .mobile-brand {
-        display: block;
-        color: #8b9b91;
+      .brand-title h1 {
+        font-size: 23px;
+      }
+
+      .foundation-ribbon {
+        font-size: 13px;
+        padding: 9px 17px;
+      }
+
+      .brand-description {
+        font-size: 13px;
+        margin: 12px auto;
+      }
+
+      .features {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 5px;
+        margin: 15px 0;
+      }
+
+      .feature-card {
+        padding: 10px 3px;
+        border-radius: 12px;
+      }
+
+      .feature-card svg {
+        width: 27px;
+        height: 27px;
+      }
+
+      .feature-card span {
         font-size: 9px;
-        letter-spacing: .14em;
-        font-weight: 800;
-        margin-bottom: 26px;
+        overflow-wrap: anywhere;
       }
 
-      h2 {
-        font-size: 29px;
+      .login-form {
+        padding: 15px 12px;
+        border-radius: 17px;
       }
 
-      .login-intro {
-        margin-bottom: 27px;
+      .input-group input {
+        height: 53px;
+        font-size: 14px;
+        padding-left: 48px;
       }
 
-      .copyright {
-        margin-top: 35px;
-      }
-    }
-
-    @media(max-width:370px) {
-      .brand-panel {
-        padding-left: 20px;
-        padding-right: 20px;
+      .input-icon {
+        left: 13px;
       }
 
-      .login-panel {
-        padding-left: 21px;
-        padding-right: 21px;
-      }
-
-      h1 {
-        font-size: 29px;
+      .login-button {
+        height: 55px;
+        font-size: 18px;
       }
 
       .form-options {
-        font-size: 10px;
+        font-size: 12px;
+      }
+
+      .forgot-link {
+        font-size: 12px;
+      }
+
+      .loading-logo-area {
+        width: 205px;
+        height: 205px;
+      }
+
+      .loading-logo {
+        width: 145px;
+        height: 145px;
+      }
+
+      .loading-title {
+        font-size: 28px;
+      }
+
+      .loading-subtitle {
+        font-size: 14px;
+      }
+
+      .loading-steps {
+        padding: 17px;
+      }
+
+      .loading-step {
+        font-size: 13px;
       }
     }
 
-    @media(prefers-reduced-motion:reduce) {
+    @media (max-width: 360px) {
+      .feature-card span {
+        font-size: 8px;
+      }
+
+      .feature-card svg {
+        width: 23px;
+        height: 23px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
       *::after {
-        transition: none!important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
@@ -734,216 +717,200 @@
 
 <body>
 
-<main class="app-shell">
+  <!-- HALAMAN LOGIN -->
 
-  <!-- PANEL IDENTITAS APLIKASI -->
-  <section class="brand-panel">
+  <main class="page-background" id="loginPage">
 
-    <div class="top-brand">
-      <div class="brand-symbol">
-        <svg viewBox="0 0 48 48" fill="none">
-          <path d="M8 25c0-8.8 7.2-16 16-16s16 7.2 16 16"
-            stroke="currentColor" stroke-width="3.2"/>
-          <path d="M8 25h32M14 25v8m20-8v8M14 33h20"
-            stroke="currentColor" stroke-width="3.2"/>
-          <path d="M18 18v7m0-7c-3-3-3-6 0-8 3 2 3 5 0 8Z"
-            stroke="currentColor" stroke-width="2.4"/>
-          <path d="M11 38c8-5 18-5 26 0-8 5-18 5-26 0Z"
-            fill="#5e9d43"/>
-        </svg>
+    <section class="login-container">
+
+      <!-- LOGO YAYASAN -->
+
+      <div class="logo-area">
+        <div class="logo-white">
+          <img
+            src="./logo-yayasan.png"
+            alt="Logo Yayasan Gawe Rancage Pasundan"
+          >
+        </div>
       </div>
 
-      <div>
-        <div class="brand-title">SPPG</div>
-        <div class="brand-subtitle">SISTEM PELAPORAN DAPUR</div>
-      </div>
-    </div>
+      <!-- IDENTITAS APLIKASI -->
 
-    <div class="hero">
+      <header class="brand-title">
 
-      <div class="eyebrow">
-        Pencatatan · Pelaporan · Monitoring
-      </div>
+        <h1>
+          Sistem Pelaporan Keuangan<br>
+          Dapur SPPG
+        </h1>
 
-      <h1>
-        Keuangan dapur, tercatat dan terpantau.
-      </h1>
+        <div class="foundation-ribbon">
+          Yayasan Gawe Rancage Pasundan
+        </div>
 
-      <p class="hero-copy">
-        Satu aplikasi untuk mencatat biaya belanja bahan pangan,
-        biaya operasional, dan seluruh pengeluaran dapur SPPG
-        secara tertib.
-      </p>
+        <p class="brand-description">
+          Aplikasi Monitoring, Pencatatan, dan Pelaporan
+          Keuangan Dapur SPPG secara Terintegrasi
+        </p>
 
-      <div class="system-label">
-        <div class="system-icon">
-          <svg viewBox="0 0 24 24" fill="none"
-            stroke="white" stroke-width="1.8">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/>
+      </header>
+
+      <!-- LIMA FITUR APLIKASI -->
+
+      <section class="features">
+
+        <!-- BELANJA -->
+
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H5"/>
+            <path d="M8 10h13M9 13h11M10 6v8M15 6v8"/>
           </svg>
+          <span>Belanja<br>Bahan Pangan</span>
         </div>
 
-        <div>
-          <strong>
-            Sistem Pelaporan Keuangan Dapur SPPG
-          </strong>
-          <span>
-            Yayasan Gawe Rancage Pasundan
-          </span>
-        </div>
-      </div>
+        <!-- OPERASIONAL -->
 
-      <div class="module-list">
-
-        <div class="module">
-          <div class="module-icon">🛒</div>
-          <span>Belanja bahan<br>pangan</span>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 8v8M8 12h8"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.4v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L8 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6.7v-2.4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L8 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2h2.4v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1z"/>
+          </svg>
+          <span>Biaya<br>Operasional</span>
         </div>
 
-        <div class="module">
-          <div class="module-icon">▤</div>
-          <span>Biaya<br>operasional</span>
+        <!-- PENGELUARAN -->
+
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24">
+            <ellipse cx="12" cy="5" rx="8" ry="3"/>
+            <path d="M4 5v4c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/>
+            <path d="M4 11v4c0 1.7 3.6 3 8 3"/>
+            <path d="M4 17v2c0 1.7 3.6 3 8 3"/>
+            <path d="M20 11v4c0 1.7-3.6 3-8 3"/>
+            <path d="M20 17v2"/>
+          </svg>
+          <span>Pengeluaran<br>Lainnya</span>
         </div>
 
-        <div class="module">
-          <div class="module-icon">Rp</div>
-          <span>Pengeluaran<br>lainnya</span>
+        <!-- LAPORAN -->
+
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 3v18h18"/>
+            <rect x="6" y="12" width="3" height="6" rx="1"/>
+            <rect x="12" y="8" width="3" height="10" rx="1"/>
+            <rect x="18" y="3" width="3" height="15" rx="1"/>
+          </svg>
+          <span>Laporan<br>Keuangan</span>
         </div>
 
-        <div class="module">
-          <div class="module-icon">▥</div>
-          <span>Laporan<br>keuangan</span>
+        <!-- MONITORING -->
+
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24">
+            <circle cx="10.5" cy="10.5" r="7.5"/>
+            <path d="m16 16 5 5"/>
+            <path d="M6.5 12.5l2.5-3 2.2 2 3-4"/>
+            <path d="M14.2 7.5v3h-3"/>
+          </svg>
+          <span>Monitoring<br>& Rekapitulasi</span>
         </div>
 
-        <div class="module">
-          <div class="module-icon">⌁</div>
-          <span>Monitoring<br>& rekap</span>
+      </section>
+
+      <!-- FORM LOGIN -->
+
+      <form class="login-form" id="loginForm">
+
+        <div class="input-group">
+
+          <svg class="input-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21v-2a8 8 0 0 1 16 0v2z"/>
+          </svg>
+
+          <input
+            type="text"
+            id="username"
+            placeholder="Username"
+            autocomplete="username"
+            required
+          >
+
         </div>
 
-      </div>
-    </div>
+        <div class="input-group">
 
-    <div class="panel-footer">
-      <span>PLATFORM ADMINISTRASI DAPUR SPPG</span>
-      <strong>Yayasan Gawe Rancage Pasundan</strong>
-    </div>
+          <svg class="input-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2">
+            <rect x="3" y="10" width="18" height="12" rx="2"/>
+            <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+            <circle cx="12" cy="16" r="1"/>
+          </svg>
 
-  </section>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            required
+          >
 
+          <button
+            type="button"
+            class="toggle-password"
+            id="togglePassword"
+            aria-label="Tampilkan password"
+          >
+            <svg id="eyeIcon" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor"
+                 stroke-width="2">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
 
-  <!-- PANEL LOGIN -->
-  <section class="login-panel">
-
-    <div class="login-card">
-
-      <div class="mobile-brand">
-        SPPG / YAYASAN GAWE RANCAGE PASUNDAN
-      </div>
-
-      <div class="login-logo">
-        <svg viewBox="0 0 48 48" fill="none">
-          <path d="M8 25c0-8.8 7.2-16 16-16s16 7.2 16 16"
-            stroke="#0b5138" stroke-width="3.2"/>
-          <path d="M8 25h32M14 25v8m20-8v8M14 33h20"
-            stroke="#0b5138" stroke-width="3.2"/>
-          <path d="M18 18v7m0-7c-3-3-3-6 0-8 3 2 3 5 0 8Z"
-            stroke="#0b5138" stroke-width="2.4"/>
-          <path d="M11 38c8-5 18-5 26 0-8 5-18 5-26 0Z"
-            fill="#5e9d43"/>
-        </svg>
-      </div>
-
-      <div class="login-kicker">
-        Akses pengguna
-      </div>
-
-      <h2>Masuk ke aplikasi</h2>
-
-      <p class="login-intro">
-        Gunakan username dan password yang telah diberikan
-        administrator untuk mengakses sistem pelaporan.
-      </p>
-
-      <form id="loginForm" autocomplete="on">
-
-        <div class="field">
-          <label for="username">Username</label>
-
-          <div class="input-wrap">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="1.8">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 21a8 8 0 0 1 16 0"/>
-              </svg>
-            </span>
-
-            <input
-              id="username"
-              name="username"
-              type="text"
-              placeholder="Masukkan username"
-              autocomplete="username"
-              required
-            >
-          </div>
         </div>
-
-
-        <div class="field">
-          <label for="password">Password</label>
-
-          <div class="input-wrap">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="1.8">
-                <rect x="4" y="10" width="16" height="11" rx="2"/>
-                <path d="M8 10V7a4 4 0 1 1 8 0v3"/>
-              </svg>
-            </span>
-
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Masukkan password"
-              autocomplete="current-password"
-              required
-            >
-
-            <button
-              class="password-toggle"
-              id="togglePassword"
-              type="button"
-              aria-label="Tampilkan password"
-            >
-              ◉
-            </button>
-          </div>
-        </div>
-
 
         <div class="form-options">
 
           <label class="remember">
-            <input type="checkbox" id="remember">
+            <input type="checkbox" id="rememberMe">
             Ingat saya
           </label>
 
-          <a class="forgot" href="#" id="forgotPassword">
+          <button
+            type="button"
+            class="forgot-link"
+            id="forgotPassword"
+          >
             Lupa password?
-          </a>
+          </button>
 
         </div>
 
-
         <button
+          type="submit"
           class="login-button"
           id="loginButton"
-          type="submit"
         >
-          Masuk <span>→</span>
+
+          <svg viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2.3">
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/>
+          </svg>
+
+          <span>Masuk</span>
+
         </button>
 
         <div
@@ -955,353 +922,545 @@
 
       </form>
 
+      <footer class="footer-text">
+        © <span id="currentYear"></span>
+        Yayasan Gawe Rancage Pasundan
+        <br>
+        Sistem Pelaporan Keuangan Dapur SPPG
+      </footer>
 
-      <!-- TOMBOL INSTALASI PWA -->
-      <button
-        class="install-button"
-        id="installButton"
-        type="button"
-      >
-        <span style="font-size:23px">⬇</span>
+    </section>
 
-        <span>
-          <strong>Pasang aplikasi PWA</strong>
-          <small>
-            Tambahkan ke layar utama perangkat Anda
-          </small>
-        </span>
-      </button>
+  </main>
 
 
-      <div class="security-note">
-        <span>♧</span>
-        Akses khusus pengguna terdaftar
+  <!-- LAYAR ANIMASI LOADING -->
+
+  <section class="loading-screen" id="loadingScreen">
+
+    <div class="loading-content">
+
+      <!-- LOGO DAN LINGKARAN ANIMASI -->
+
+      <div class="loading-logo-area">
+
+        <svg class="orbit" viewBox="0 0 245 245">
+          <circle
+            class="orbit-track"
+            cx="122.5"
+            cy="122.5"
+            r="108"
+          />
+          <circle
+            class="orbit-green"
+            cx="122.5"
+            cy="122.5"
+            r="108"
+          />
+          <circle
+            class="orbit-gold"
+            cx="122.5"
+            cy="122.5"
+            r="118"
+          />
+        </svg>
+
+        <div class="loading-logo">
+          <img
+            src="./logo-yayasan.png"
+            alt="Logo Yayasan Gawe Rancage Pasundan"
+          >
+        </div>
+
       </div>
 
-      <div class="copyright">
-        © <span id="year"></span>
-        Sistem Pelaporan Keuangan Dapur SPPG
+      <h2 class="loading-title" id="loadingTitle">
+        Harap Tunggu...
+      </h2>
+
+      <p class="loading-subtitle" id="loadingSubtitle">
+        Sedang memproses login Anda
+      </p>
+
+      <!-- TAHAPAN PROSES -->
+
+      <div class="loading-steps">
+
+        <div class="loading-step pending" id="step1">
+
+          <div class="step-indicator">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="m5 12 5 5L20 7"/>
+            </svg>
+          </div>
+
+          <span>Mengamankan sesi pengguna</span>
+
+        </div>
+
+        <div class="loading-line"></div>
+
+        <div class="loading-step pending" id="step2">
+
+          <div class="step-indicator"></div>
+
+          <span>Memverifikasi akses ke sistem...</span>
+
+        </div>
+
+        <div class="loading-line"></div>
+
+        <div class="loading-step pending" id="step3">
+
+          <div class="step-indicator"></div>
+
+          <span>Menyiapkan sistem pelaporan</span>
+
+        </div>
+
+      </div>
+
+      <div class="loading-error" id="loadingError">
+        Terjadi kendala saat memproses login.
         <br>
-        Yayasan Gawe Rancage Pasundan
+        <button type="button" id="backToLogin">
+          Kembali ke Login
+        </button>
       </div>
 
     </div>
+
   </section>
 
-</main>
+
+  <!-- JAVASCRIPT -->
+
+  <script>
+
+    /* =====================================
+       PENGATURAN APLIKASI
+    ===================================== */
+
+    // Masukkan URL Web App Google Apps Script
+    // setelah backend autentikasi selesai dibuat.
+
+    const APPS_SCRIPT_URL = "";
 
 
-<script>
+    // Tujuan halaman setelah login.
+    // Respons Apps Script dapat mengembalikan role:
+    // "admin" atau "user".
 
-/* ==========================================
-   KONFIGURASI GOOGLE APPS SCRIPT
-========================================== */
-
-const APPS_SCRIPT_URL = "";
-
-/*
-  URL Apps Script akan dimasukkan setelah
-  backend Google Sheets selesai dibuat.
-*/
+    const ADMIN_PAGE = "./admin.html";
+    const USER_PAGE = "./user.html";
 
 
-/* ==========================================
-   ELEMEN HALAMAN
-========================================== */
+    /* =====================================
+       ELEMEN HALAMAN
+    ===================================== */
 
-const form = document.getElementById("loginForm");
+    const loginForm = document.getElementById("loginForm");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
 
-const passwordInput =
-  document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const statusMessage = document.getElementById("statusMessage");
 
-const togglePassword =
-  document.getElementById("togglePassword");
+    const rememberMe = document.getElementById("rememberMe");
+    const togglePassword = document.getElementById("togglePassword");
 
-const statusMessage =
-  document.getElementById("statusMessage");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingTitle = document.getElementById("loadingTitle");
+    const loadingSubtitle = document.getElementById("loadingSubtitle");
 
-const loginButton =
-  document.getElementById("loginButton");
-
-const installButton =
-  document.getElementById("installButton");
-
-
-document.getElementById("year").textContent =
-  new Date().getFullYear();
+    const loadingError = document.getElementById("loadingError");
 
 
-/* ==========================================
-   TAMPILKAN / SEMBUNYIKAN PASSWORD
-========================================== */
+    /* =====================================
+       TAHUN OTOMATIS
+    ===================================== */
 
-togglePassword.addEventListener("click", () => {
-
-  const isHidden =
-    passwordInput.type === "password";
-
-  passwordInput.type =
-    isHidden ? "text" : "password";
-
-  togglePassword.textContent =
-    isHidden ? "◎" : "◉";
-
-});
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
 
 
-/* ==========================================
-   PESAN STATUS
-========================================== */
+    /* =====================================
+       AUTO SCROLL KE ATAS
+    ===================================== */
 
-function showMessage(message, type = "info") {
-
-  statusMessage.textContent = message;
-
-  statusMessage.className =
-    "status-message " + type;
-
-}
-
-
-/* ==========================================
-   PROSES LOGIN
-========================================== */
-
-form.addEventListener("submit", async (event) => {
-
-  event.preventDefault();
-
-  const username =
-    document.getElementById("username").value.trim();
-
-  const password =
-    passwordInput.value;
-
-  if (!username || !password) {
-
-    showMessage(
-      "Username dan password wajib diisi.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  /*
-    LOGIN BELUM DIAKTIFKAN.
-
-    Setelah Google Apps Script tersedia,
-    URL backend dimasukkan di atas.
-  */
-
-  if (!APPS_SCRIPT_URL) {
-
-    showMessage(
-      "Tampilan login sudah siap. Koneksi Google Sheets melalui Apps Script belum dipasang. Login belum dapat memverifikasi akun.",
-      "info"
-    );
-
-    return;
-
-  }
-
-
-  loginButton.disabled = true;
-
-  loginButton.textContent =
-    "Memeriksa akun...";
-
-
-  try {
-
-    const response = await fetch(
-      APPS_SCRIPT_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
-          action: "login",
-          username,
-          password
-        })
-      }
-    );
-
-    const result = await response.json();
-
-
-    if (result && result.success) {
-
-      showMessage(
-        "Login berhasil. Integrasikan langkah berikutnya untuk membuka dashboard.",
-        "success"
-      );
-
-    } else {
-
-      showMessage(
-        result.message ||
-        "Username atau password tidak sesuai.",
-        "error"
-      );
-
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
     }
 
-  } catch (error) {
+    function scrollToTopOnOpen() {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto"
+      });
+    }
 
-    showMessage(
-      "Tidak dapat menghubungi server login. Periksa koneksi internet atau konfigurasi Apps Script.",
-      "error"
-    );
-
-  } finally {
-
-    loginButton.disabled = false;
-
-    loginButton.innerHTML =
-      'Masuk <span>→</span>';
-
-  }
-
-});
+    window.addEventListener("load", scrollToTopOnOpen);
+    window.addEventListener("pageshow", scrollToTopOnOpen);
 
 
-/* ==========================================
-   LUPA PASSWORD
-========================================== */
+    /* =====================================
+       INGAT USERNAME
+    ===================================== */
 
-document
-  .getElementById("forgotPassword")
-  .addEventListener("click", (event) => {
+    try {
+      const savedUsername = localStorage.getItem("sppg_username");
 
-    event.preventDefault();
-
-    showMessage(
-      "Silakan hubungi administrator untuk bantuan pengaturan ulang akun.",
-      "info"
-    );
-
-  });
+      if (savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberMe.checked = true;
+      }
+    } catch (error) {
+      console.warn("Penyimpanan browser tidak tersedia.");
+    }
 
 
-/* ==========================================
-   INSTALASI PWA
-========================================== */
+    /* =====================================
+       TAMPILKAN / SEMBUNYIKAN PASSWORD
+    ===================================== */
 
-let deferredInstallPrompt = null;
+    togglePassword.addEventListener("click", function() {
 
+      const isPassword = passwordInput.type === "password";
 
-window.addEventListener(
-  "beforeinstallprompt",
-  (event) => {
+      passwordInput.type = isPassword ? "text" : "password";
 
-    event.preventDefault();
+      togglePassword.setAttribute(
+        "aria-label",
+        isPassword ? "Sembunyikan password" : "Tampilkan password"
+      );
 
-    deferredInstallPrompt = event;
+      document.getElementById("eyeIcon").innerHTML = isPassword
+        ? `
+          <path d="M3 3l18 18"/>
+          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+          <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-4 4.5"/>
+          <path d="M6.2 6.2C3.5 8 2 12 2 12s3.5 7 10 7a10 10 0 0 0 3-.5"/>
+        `
+        : `
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
 
-    installButton.classList.add("visible");
-
-  }
-);
-
-
-installButton.addEventListener("click", async () => {
-
-  if (!deferredInstallPrompt) {
-
-    showMessage(
-      "Gunakan menu browser lalu pilih Tambahkan ke layar utama atau Install app.",
-      "info"
-    );
-
-    return;
-
-  }
-
-  deferredInstallPrompt.prompt();
-
-  await deferredInstallPrompt.userChoice;
-
-  deferredInstallPrompt = null;
-
-  installButton.classList.remove("visible");
-
-});
+    });
 
 
-window.addEventListener("appinstalled", () => {
+    /* =====================================
+       LUPA PASSWORD
+    ===================================== */
 
-  installButton.classList.remove("visible");
+    document.getElementById("forgotPassword")
+      .addEventListener("click", function() {
 
-  showMessage(
-    "Aplikasi berhasil dipasang pada perangkat.",
-    "success"
-  );
-
-});
-
-
-/* ==========================================
-   SERVICE WORKER
-========================================== */
-
-if (
-  "serviceWorker" in navigator &&
-  (
-    location.protocol === "https:" ||
-    location.hostname === "localhost"
-  )
-) {
-
-  window.addEventListener("load", () => {
-
-    navigator.serviceWorker
-      .register("./sw.js")
-      .catch((error) => {
-
-        console.warn(
-          "Service Worker gagal:",
-          error
+        alert(
+          "Jika Anda lupa password, silakan hubungi administrator Yayasan Gawe Rancage Pasundan untuk mendapatkan bantuan reset password."
         );
 
       });
 
-  });
 
-}
-  
-/* ==========================================
-   AUTO SCROLL KE POSISI PALING ATAS
-========================================== */
+    /* =====================================
+       TAMPILKAN PESAN LOGIN
+    ===================================== */
 
-if ("scrollRestoration" in history) {
-  history.scrollRestoration = "manual";
-}
+    function showStatus(message, type) {
 
-function scrollToTopOnOpen() {
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "instant"
-  });
-}
+      statusMessage.textContent = message;
 
-window.addEventListener("load", () => {
-  scrollToTopOnOpen();
-});
+      statusMessage.className =
+        "status-message " + type;
 
-window.addEventListener("pageshow", () => {
-  scrollToTopOnOpen();
-});
+    }
 
 
-</script>
+    /* =====================================
+       ANIMASI TAHAPAN LOADING
+    ===================================== */
+
+    function updateStep(number, state) {
+
+      const step = document.getElementById("step" + number);
+
+      step.className = "loading-step " + state;
+
+      const indicator = step.querySelector(".step-indicator");
+
+      if (state === "done") {
+
+        indicator.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none"
+               stroke="white" stroke-width="3">
+            <path d="m5 12 5 5L20 7"/>
+          </svg>
+        `;
+
+      } else {
+
+        indicator.innerHTML = "";
+
+      }
+
+    }
+
+
+    function resetLoadingSteps() {
+
+      updateStep(1, "pending");
+      updateStep(2, "pending");
+      updateStep(3, "pending");
+
+    }
+
+
+    function showLoading() {
+
+      resetLoadingSteps();
+
+      loadingError.style.display = "none";
+
+      loadingTitle.textContent = "Harap Tunggu...";
+      loadingSubtitle.textContent =
+        "Sedang memproses login Anda";
+
+      loadingScreen.classList.add("active");
+
+      document.body.style.overflow = "hidden";
+
+      updateStep(1, "done");
+      updateStep(2, "current");
+
+    }
+
+
+    function hideLoading() {
+
+      loadingScreen.classList.remove("active");
+
+      document.body.style.overflow = "";
+
+    }
+
+
+    function showLoadingError(message) {
+
+      loadingTitle.textContent = "Login Gagal";
+      loadingSubtitle.textContent = message;
+
+      updateStep(2, "pending");
+      updateStep(3, "pending");
+
+      loadingError.style.display = "block";
+
+    }
+
+
+    document.getElementById("backToLogin")
+      .addEventListener("click", function() {
+
+        hideLoading();
+
+        passwordInput.value = "";
+
+        passwordInput.focus();
+
+        showStatus(
+          "Silakan periksa kembali username dan password Anda.",
+          "error"
+        );
+
+      });
+
+
+    /* =====================================
+       PROSES AUTENTIKASI
+    ===================================== */
+
+    loginForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!username || !password) {
+
+        showStatus(
+          "Username dan password wajib diisi.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      // Pastikan URL Apps Script sudah dipasang.
+
+      if (!APPS_SCRIPT_URL) {
+
+        showStatus(
+          "Koneksi login belum diaktifkan. URL Google Apps Script belum dipasang.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      loginButton.disabled = true;
+
+      loginButton.querySelector("span").textContent =
+        "Memproses...";
+
+      showLoading();
+
+
+      try {
+
+        // Kirim data login ke Google Apps Script.
+        // Backend harus memvalidasi password di server.
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+
+          body: JSON.stringify({
+            action: "login",
+            username: username,
+            password: password
+          }),
+
+          redirect: "follow"
+
+        });
+
+
+        if (!response.ok) {
+          throw new Error("Server tidak dapat dihubungi.");
+        }
+
+
+        const result = await response.json();
+
+
+        // Periksa hasil autentikasi.
+
+        if (!result.success) {
+
+          throw new Error(
+            result.message || "Username atau password salah."
+          );
+
+        }
+
+
+        // Simpan username jika pengguna memilih Ingat Saya.
+
+        try {
+
+          if (rememberMe.checked) {
+
+            localStorage.setItem("sppg_username", username);
+
+          } else {
+
+            localStorage.removeItem("sppg_username");
+
+          }
+
+        } catch (error) {
+          console.warn("Tidak dapat menyimpan preferensi.");
+        }
+
+
+        // Proses verifikasi selesai.
+
+        updateStep(2, "done");
+        updateStep(3, "current");
+
+        loadingSubtitle.textContent =
+          "Akses berhasil diverifikasi";
+
+
+        // Beri status sukses.
+
+        await new Promise(resolve => setTimeout(resolve, 700));
+
+        updateStep(3, "done");
+
+        loadingTitle.textContent = "Berhasil!";
+        loadingSubtitle.textContent =
+          "Menyiapkan halaman utama...";
+
+
+        // Tentukan tujuan berdasarkan role dari server.
+
+        const role = String(result.role || "user").toLowerCase();
+
+        let destination = USER_PAGE;
+
+        if (role === "admin") {
+          destination = ADMIN_PAGE;
+        }
+
+        // Redirect ke halaman yang sesuai.
+
+        window.location.href = destination;
+
+
+      } catch (error) {
+
+        console.error("Login error:", error);
+
+        showLoadingError(
+          error.message ||
+          "Terjadi kesalahan koneksi. Silakan coba kembali."
+        );
+
+      } finally {
+
+        loginButton.disabled = false;
+
+        loginButton.querySelector("span").textContent =
+          "Masuk";
+
+      }
+
+    });
+
+
+    /* =====================================
+       SERVICE WORKER PWA
+    ===================================== */
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", function() {
+
+        navigator.serviceWorker
+          .register("./sw.js")
+          .catch(function(error) {
+            console.warn(
+              "Service Worker belum aktif:",
+              error
+            );
+          });
+
+      });
+
+    }
+
+  </script>
 
 </body>
 </html>
-
