@@ -1093,7 +1093,7 @@
 
     try {
       await apiRequest(
-        `${modules[page].endpoint}/${encodeURIComponent(record.id)}`,
+        `${modules[page].endpoint}?id=${encodeURIComponent(record.id)}`,
         {
           method: "DELETE"
         }
