@@ -5,7 +5,7 @@
   /* =========================================================
      KONFIGURASI UTAMA
      ========================================================= */
-
+  
   const API_BASE_URL =
     "https://sppg-keuangan-dev.yayasangawerancagepasundan.workers.dev";
 
