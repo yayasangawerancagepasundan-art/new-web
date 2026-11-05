@@ -7,7 +7,7 @@
      ========================================================= */
 
   const API_BASE_URL =
-    "https://sppg-keuangan-dev.yayasangawerancagepasundan.workers.dev/";
+    "https://sppg-keuangan-dev.yayasangawerancagepasundan.workers.dev";
 
   const AUTH_TOKEN_KEY = "sppg_auth_token";
   const LOGIN_PAGE = "./index.html";
