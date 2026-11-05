@@ -1230,10 +1230,11 @@ body {
 // Masukkan URL Web App Google Apps Script
 // setelah backend autentikasi selesai dibuat.
 
-const APPS_SCRIPT_URL = "";
+const API_BASE_URL =
+  "https://sppg-keuangan-dev.yayasangawerancepasundan.workers.dev";
 
-const ADMIN_PAGE = "./admin.html";
-const USER_PAGE = "./user.html";
+const SUPER_ADMIN_PAGE = "./super-admin.html";
+const AUTH_TOKEN_KEY = "sppg_auth_token";
 
 
 /* ELEMEN HALAMAN */
@@ -1444,109 +1445,108 @@ loginForm.addEventListener("submit", async function(event) {
   const password = passwordInput.value;
 
   if (!username || !password) {
-
-    showStatus(
-      "Username dan password wajib diisi.",
-      "error"
-    );
-
+    showStatus("Username dan password wajib diisi.", "error");
     return;
-
-  }
-
-  // URL Apps Script harus dipasang sebelum login digunakan.
-
-  if (!APPS_SCRIPT_URL) {
-
-    showStatus(
-      "Koneksi login belum diaktifkan. URL Google Apps Script belum dipasang.",
-      "error"
-    );
-
-    return;
-
   }
 
   loginButton.disabled = true;
   loginButton.querySelector("span").textContent = "Memproses...";
-
+  showStatus("", "");
   showLoading();
 
   try {
 
-    const response = await fetch(APPS_SCRIPT_URL, {
-
+    // Login langsung ke Cloudflare Worker.
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
-
       headers: {
-        "Content-Type": "text/plain;charset=utf-8"
+        "Content-Type": "application/json"
       },
-
       body: JSON.stringify({
-        action: "login",
         username: username,
         password: password
-      }),
-
-      redirect: "follow"
-
+      })
     });
 
-    if (!response.ok) {
-      throw new Error("Server tidak dapat dihubungi.");
+    let result;
+
+    try {
+      result = await response.json();
+    } catch (parseError) {
+      throw new Error("Respons server tidak valid. Silakan coba kembali.");
     }
 
-    const result = await response.json();
-
-    if (!result.success) {
+    if (!response.ok || !result || result.success !== true) {
       throw new Error(
-        result.message || "Username atau password salah."
+        (result && result.message) ||
+        "Username atau password salah."
       );
     }
 
+    // Pastikan respons login berisi token sesi.
+    if (!result.token) {
+      throw new Error("Login berhasil tetapi token sesi tidak diterima.");
+    }
+
+    // Dashboard yang tersedia pada tahap ini khusus Super Admin.
+    const roles = Array.isArray(result.roles) ? result.roles : [];
+    const isSuperAdmin = roles.some(function(item) {
+      return String(item && item.role_code || "").toUpperCase() === "SUPER_ADMIN";
+    }) || String(result.role || "").toUpperCase() === "SUPER_ADMIN";
+
+    if (!isSuperAdmin) {
+      // Cabut sesi yang terlanjur dibuat untuk akun yang belum memiliki
+      // akses ke halaman Super Admin.
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${result.token}`
+          }
+        });
+      } catch (logoutError) {
+        console.warn("Sesi akun non-Super Admin belum dapat dicabut otomatis.");
+      }
+
+      throw new Error("Akun ini belum memiliki hak akses Super Admin.");
+    }
+
     // Simpan username bila Ingat Saya dipilih.
-
     try {
-
       if (rememberMe.checked) {
         localStorage.setItem("sppg_username", username);
       } else {
         localStorage.removeItem("sppg_username");
       }
-
-    } catch (error) {
-      console.warn("Tidak dapat menyimpan preferensi.");
+    } catch (storageError) {
+      console.warn("Preferensi username tidak dapat disimpan.");
     }
 
-    // Tahapan verifikasi selesai.
+    // Simpan token untuk digunakan oleh halaman Super Admin.
+    sessionStorage.setItem(AUTH_TOKEN_KEY, result.token);
 
     updateStep(2, "done");
     updateStep(3, "current");
-
-    loadingSubtitle.textContent =
-      "Akses berhasil diverifikasi";
+    loadingSubtitle.textContent = "Akses berhasil diverifikasi";
 
     await new Promise(resolve => setTimeout(resolve, 700));
 
     updateStep(3, "done");
-
     loadingTitle.textContent = "Berhasil!";
-    loadingSubtitle.textContent =
-      "Menyiapkan halaman utama...";
+    loadingSubtitle.textContent = "Menyiapkan halaman utama...";
 
-    const role = String(result.role || "user").toLowerCase();
-
-    let destination = USER_PAGE;
-
-    if (role === "admin") {
-      destination = ADMIN_PAGE;
-    }
-
-    window.location.href = destination;
+    window.location.replace(SUPER_ADMIN_PAGE);
 
   } catch (error) {
 
     console.error("Login error:", error);
+
+    // Jangan meninggalkan token sesi jika proses login gagal.
+    try {
+      sessionStorage.removeItem(AUTH_TOKEN_KEY);
+    } catch (storageError) {
+      console.warn("Token sesi tidak dapat dibersihkan dari penyimpanan browser.");
+    }
 
     showLoadingError(
       error.message ||
