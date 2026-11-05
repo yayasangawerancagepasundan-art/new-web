@@ -860,11 +860,20 @@
     });
 
     $$(".delete-record").forEach(button => {
-      button.addEventListener("click", () => {
-        const index = Number(button.dataset.index);
-        deleteRecord(page, items[index]);
-      });
-    });
+  button.addEventListener("click", () => {
+    const index = Number(button.dataset.index);
+    const record = items[index];
+
+    if (
+      page === "yayasan" &&
+      String(record.status).toUpperCase() === "INACTIVE"
+    ) {
+      activateRecord(page, record);
+    } else {
+      deleteRecord(page, record);
+    }
+  });
+});
   }
 
   function renderTable(columns, items, page) {
@@ -883,27 +892,58 @@
 
     const rows = items.map((item, index) => {
       const cells = columns.map(column => {
-        const value = item[column[0]];
+  const value = item[column[0]];
 
-        return `<td>${escapeHTML(formatValue(value))}</td>`;
-      }).join("");
+  if (page === "yayasan" && column[0] === "status") {
+    const status = String(value || "").toUpperCase();
+    const isActive = status === "ACTIVE";
 
-      const actions = modules[page].readOnly
-        ? ""
-        : `
-          <td class="record-actions">
-            <button
-              type="button"
-              class="edit-record"
-              data-index="${index}"
-            >Edit</button>
-            <button
-              type="button"
-              class="delete-record"
-              data-index="${index}"
-            >Nonaktifkan</button>
-          </td>
-        `;
+    const label = isActive ? "AKTIF" : "NONAKTIF";
+    const color = isActive ? "#22c55e" : "#ef4444";
+    const background = isActive
+      ? "rgba(34,197,94,0.12)"
+      : "rgba(239,68,68,0.12)";
+
+    return `
+      <td>
+        <span style="
+          display:inline-block;
+          padding:5px 12px;
+          border-radius:20px;
+          font-size:12px;
+          font-weight:700;
+          color:${color};
+          background:${background};
+          border:1px solid ${color};
+        ">${label}</span>
+      </td>
+    `;
+  }
+
+  return `<td>${escapeHTML(formatValue(value))}</td>`;
+}).join("");
+
+      const isInactive =
+  page === "yayasan" &&
+  String(item.status).toUpperCase() === "INACTIVE";
+
+const actions = modules[page].readOnly
+  ? ""
+  : `
+    <td class="record-actions">
+      <button
+        type="button"
+        class="edit-record"
+        data-index="${index}"
+      >Edit</button>
+
+      <button
+        type="button"
+        class="delete-record"
+        data-index="${index}"
+      >${isInactive ? "Aktifkan" : "Nonaktifkan"}</button>
+    </td>
+  `;
 
       return `<tr>${cells}${actions}</tr>`;
     }).join("");
@@ -1075,7 +1115,43 @@
   /* =========================================================
      NONAKTIFKAN DATA
      ========================================================= */
+  async function activateRecord(page, record) {
+  if (!record?.id) {
+    showNotification(
+      "ID data tidak ditemukan. Data tidak diubah.",
+      "error"
+    );
+    return;
+  }
 
+  const confirmed = window.confirm(
+    "Apakah Anda yakin ingin mengaktifkan kembali yayasan ini?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await apiRequest(
+      `${modules[page].endpoint}?id=${encodeURIComponent(record.id)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          status: "ACTIVE"
+        })
+      }
+    );
+
+    showNotification(
+      "Yayasan berhasil diaktifkan kembali.",
+      "success"
+    );
+
+    loadModule(page);
+
+  } catch (error) {
+    showNotification(error.message, "error");
+  }
+}
   async function deleteRecord(page, record) {
     if (!record?.id) {
       showNotification(
