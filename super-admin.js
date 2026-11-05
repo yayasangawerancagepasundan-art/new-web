@@ -1041,9 +1041,9 @@
       try {
         const id = record?.id;
 
-        const endpoint = id
-          ? `${config.endpoint}/${encodeURIComponent(id)}`
-          : config.endpoint;
+         const endpoint = id
+         ? `${config.endpoint}?id=${encodeURIComponent(id)}`
+         : config.endpoint;
 
         const method = id ? "PUT" : "POST";
 
