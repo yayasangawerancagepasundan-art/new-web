@@ -894,31 +894,34 @@
       const cells = columns.map(column => {
   const value = item[column[0]];
 
-  if (page === "yayasan" && column[0] === "status") {
-    const status = String(value || "").toUpperCase();
-    const isActive = status === "ACTIVE";
+ if (
+  ["yayasan", "dapur"].includes(page) &&
+  column[0] === "status"
+) {
+  const status = String(value || "").toUpperCase();
+  const isActive = ["ACTIVE", "AKTIF"].includes(status);
 
-    const label = isActive ? "AKTIF" : "NONAKTIF";
-    const color = isActive ? "#22c55e" : "#ef4444";
-    const background = isActive
-      ? "rgba(34,197,94,0.12)"
-      : "rgba(239,68,68,0.12)";
+  const label = isActive ? "AKTIF" : "NONAKTIF";
+  const color = isActive ? "#22c55e" : "#ef4444";
+  const background = isActive
+    ? "rgba(34,197,94,0.12)"
+    : "rgba(239,68,68,0.12)";
 
-    return `
-      <td>
-        <span style="
-          display:inline-block;
-          padding:5px 12px;
-          border-radius:20px;
-          font-size:12px;
-          font-weight:700;
-          color:${color};
-          background:${background};
-          border:1px solid ${color};
-        ">${label}</span>
-      </td>
-    `;
-  }
+  return `
+    <td>
+      <span style="
+        display:inline-block;
+        padding:5px 12px;
+        border-radius:20px;
+        font-size:12px;
+        font-weight:700;
+        color:${color};
+        background:${background};
+        border:1px solid ${color};
+      ">${label}</span>
+    </td>
+  `;
+}
 
   return `<td>${escapeHTML(formatValue(value))}</td>`;
 }).join("");
