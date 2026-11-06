@@ -97,8 +97,8 @@
         ["status", "Status"]
       ],
       fields: [
-        ["foundation_id", "ID Yayasan", "text", true],
-        ["kitchen_code", "Kode Dapur", "text", true],
+        ["foundation_id", "Yayasan Pemilik", "foundation", true],
+        ["kitchen_code", "Kode Dapur", "auto-code", false],
         ["kitchen_name", "Nama Dapur", "text", true],
         ["location", "Wilayah", "text", false],
         ["address", "Alamat", "textarea", false],
@@ -965,7 +965,7 @@ const actions = modules[page].readOnly
      FORM TAMBAH DAN EDIT DATA
      ========================================================= */
 
-  function openRecordForm(page, record = null) {
+  async function openRecordForm(page, record = null) {
     const config = modules[page];
 
     if (!config?.fields?.length) {
@@ -978,10 +978,75 @@ const actions = modules[page].readOnly
 
     const isEdit = Boolean(record);
 
+    let foundationOptions = [];
+
+    if (page === "dapur") {
+      try {
+        const foundationResult = await apiRequest("/api/admin/foundations");
+        const allFoundations = foundationResult.data || [];
+
+        foundationOptions = allFoundations.filter(item =>
+          String(item.status).toUpperCase() === "ACTIVE" ||
+          item.id === record?.foundation_id
+        );
+      } catch (error) {
+        showNotification(
+          `Daftar Yayasan tidak dapat dimuat: ${error.message}`,
+          "error"
+        );
+        return;
+      }
+
+      if (!isEdit && foundationOptions.length === 0) {
+        showNotification(
+          "Belum ada Yayasan aktif. Aktifkan atau tambahkan Yayasan terlebih dahulu.",
+          "warning"
+        );
+        return;
+      }
+    }
+
     const fieldsHTML = config.fields.map(field => {
       const [name, label, type, required, options] = field;
 
       const value = record?.[name] ?? "";
+
+      if (type === "foundation") {
+        return `
+          <label class="form-field">
+            <span>${escapeHTML(label)}</span>
+            <select
+              name="${escapeHTML(name)}"
+              ${required ? "required" : ""}
+              ${isEdit ? "disabled" : ""}
+            >
+              <option value="">Pilih Yayasan</option>
+              ${foundationOptions.map(item => `
+                <option
+                  value="${escapeHTML(item.id)}"
+                  ${String(value) === String(item.id) ? "selected" : ""}
+                >${escapeHTML(item.foundation_code || "Tanpa kode")} — ${escapeHTML(item.foundation_name)}</option>
+              `).join("")}
+            </select>
+            ${isEdit ? '<small>Yayasan pemilik tidak dapat diubah melalui formulir edit.</small>' : '<small>Daftar hanya menampilkan Yayasan aktif.</small>'}
+          </label>
+        `;
+      }
+
+      if (type === "auto-code") {
+        return `
+          <label class="form-field">
+            <span>${escapeHTML(label)}</span>
+            <input
+              type="text"
+              value="${escapeHTML(record?.kitchen_code || "Dibuat otomatis oleh sistem")}"
+              readonly
+              disabled
+            >
+            <small>Kode Dapur dibuat otomatis saat data disimpan dan tidak dapat diubah manual.</small>
+          </label>
+        `;
+      }
 
       if (type === "textarea") {
         return `
