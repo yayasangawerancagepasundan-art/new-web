@@ -859,14 +859,16 @@
       });
     });
 
-    $$(".delete-record").forEach(button => {
+   $$(".delete-record").forEach(button => {
   button.addEventListener("click", () => {
     const index = Number(button.dataset.index);
     const record = items[index];
 
+    const status = String(record.status || "").toUpperCase();
+
     if (
-      page === "yayasan" &&
-      String(record.status).toUpperCase() === "INACTIVE"
+      ["yayasan", "dapur"].includes(page) &&
+      ["INACTIVE", "NONAKTIF"].includes(status)
     ) {
       activateRecord(page, record);
     } else {
@@ -927,8 +929,10 @@
 }).join("");
 
       const isInactive =
-  page === "yayasan" &&
-  String(item.status).toUpperCase() === "INACTIVE";
+  ["yayasan", "dapur"].includes(page) &&
+  ["INACTIVE", "NONAKTIF"].includes(
+    String(item.status || "").toUpperCase()
+  );
 
 const actions = modules[page].readOnly
   ? ""
