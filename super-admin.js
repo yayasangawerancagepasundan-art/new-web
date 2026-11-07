@@ -110,12 +110,13 @@
     pengguna: {
       endpoint: "/api/admin/users",
       description: "Pengelolaan akun, status, dan penugasan pengguna.",
-      columns: [
+     columns: [
         ["full_name", "Nama Lengkap"],
         ["username", "Username"],
         ["email", "Email"],
         ["role_names", "Role"],
         ["account_status", "Status Akun"],
+        ["connection_status", "Koneksi"],
         ["last_login_at", "Login Terakhir"]
       ],
          fields: [
@@ -942,9 +943,66 @@
 
     const rows = items.map((item, index) => {
       const cells = columns.map(column => {
-  const value = item[column[0]];
+const value = item[column[0]];
 
- if (
+// Tampilan status akun pengguna.
+if (page === "pengguna" && column[0] === "account_status") {
+  const status = String(value || "").toUpperCase();
+
+  const statusConfig = {
+    ACTIVE: ["AKTIF", "#22c55e", "rgba(34,197,94,0.12)"],
+    INACTIVE: ["TIDAK AKTIF", "#ef4444", "rgba(239,68,68,0.12)"],
+    PENDING: ["MENUNGGU", "#f59e0b", "rgba(245,158,11,0.12)"],
+    FROZEN: ["DIBEKUKAN", "#64748b", "rgba(100,116,139,0.12)"]
+  };
+
+  const [label, color, background] =
+    statusConfig[status] || ["TIDAK DIKETAHUI", "#64748b", "rgba(100,116,139,0.12)"];
+
+  return `
+    <td>
+      <span style="
+        display:inline-block;
+        padding:5px 12px;
+        border-radius:20px;
+        font-size:12px;
+        font-weight:700;
+        color:${color};
+        background:${background};
+        border:1px solid ${color};
+      ">${label}</span>
+    </td>
+  `;
+}
+
+// Tampilan status koneksi pengguna.
+if (page === "pengguna" && column[0] === "connection_status") {
+  const isOnline =
+    String(value || "").toUpperCase() === "ONLINE";
+
+  const label = isOnline ? "ONLINE" : "OFFLINE";
+  const color = isOnline ? "#22c55e" : "#ef4444";
+  const background = isOnline
+    ? "rgba(34,197,94,0.12)"
+    : "rgba(239,68,68,0.12)";
+
+  return `
+    <td>
+      <span style="
+        display:inline-block;
+        padding:5px 12px;
+        border-radius:20px;
+        font-size:12px;
+        font-weight:700;
+        color:${color};
+        background:${background};
+        border:1px solid ${color};
+      ">${label}</span>
+    </td>
+  `;
+}
+
+if (
   ["yayasan", "dapur"].includes(page) &&
   column[0] === "status"
 ) {
