@@ -1208,8 +1208,16 @@ const actions = modules[page].readOnly
       const isSuperAdmin = role === "SUPER_ADMIN";
       const needsKitchen = kitchenRoles.includes(role);
 
-      foundationField.hidden = isSuperAdmin;
-      kitchenField.hidden = isSuperAdmin || !needsKitchen;
+      foundationField.hidden = false;
+      kitchenField.hidden = false;
+
+      if (foundationSelect) {
+        foundationSelect.disabled = isSuperAdmin;
+      }
+
+      if (kitchenSelect) {
+        kitchenSelect.disabled = isSuperAdmin || !needsKitchen;
+      }
 
       if (foundationSelect) {
         foundationSelect.required = !isSuperAdmin;
