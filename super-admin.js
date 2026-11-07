@@ -118,14 +118,14 @@
         ["account_status", "Status Akun"],
         ["last_login_at", "Login Terakhir"]
       ],
-      fields: [
+         fields: [
         ["full_name", "Nama Lengkap", "text", true],
         ["username", "Username", "text", true],
         ["email", "Email", "email", true],
         ["phone", "Nomor Telepon", "text", false],
-        ["password", "Password Awal", "password", true],
-        ["role_code", "Kode Role", "text", true],
-        ["foundation_id", "ID Yayasan", "text", false],
+        ["password", "Password Sementara", "password", true],
+        ["role_code", "Role Pengguna", "role", true],
+        ["foundation_id", "Yayasan", "foundation", false],
         ["account_status", "Status Akun", "select", true,
           ["PENDING", "ACTIVE", "INACTIVE", "FROZEN"]]
       ]
@@ -987,7 +987,7 @@ const actions = modules[page].readOnly
 
     let foundationOptions = [];
 
-    if (page === "dapur") {
+        if (page === "dapur" || page === "pengguna") {
       try {
         const foundationResult = await apiRequest("/api/admin/foundations");
         const allFoundations = foundationResult.data || [];
@@ -1018,9 +1018,39 @@ const actions = modules[page].readOnly
 
       const value = record?.[name] ?? "";
 
-      if (type === "foundation") {
+      if (type === "role") {
         return `
           <label class="form-field">
+            <span>${escapeHTML(label)}</span>
+            <select
+             name="${escapeHTML(name)}"
+              id="userRoleSelect"
+              ${required ? "required" : ""}
+            >
+              <option value="">Pilih Role</option>
+              <option value="SUPER_ADMIN" ${value === "SUPER_ADMIN" ? "selected" : ""}>Super Admin</option>
+              <option value="ADMIN_YAYASAN" ${value === "ADMIN_YAYASAN" ? "selected" : ""}>Admin Yayasan</option>
+              <option value="PEMBINA" ${value === "PEMBINA" ? "selected" : ""}>Pembina</option>
+              <option value="KETUA" ${value === "KETUA" ? "selected" : ""}>Ketua</option>
+              <option value="BENDAHARA" ${value === "BENDAHARA" ? "selected" : ""}>Bendahara</option>
+              <option value="SEKRETARIS" ${value === "SEKRETARIS" ? "selected" : ""}>Sekretaris</option>
+              <option value="PIC_YAYASAN" ${value === "PIC_YAYASAN" ? "selected" : ""}>PIC Yayasan</option>
+              <option value="ASISTEN_LAPANGAN" ${value === "ASISTEN_LAPANGAN" ? "selected" : ""}>Asisten Lapangan</option>
+              <option value="KOORDINATOR_LAPANGAN" ${value === "KOORDINATOR_LAPANGAN" ? "selected" : ""}>Koordinator Lapangan</option>
+              <option value="PENGAWAS_LAPANGAN" ${value === "PENGAWAS_LAPANGAN" ? "selected" : ""}>Pengawas Lapangan</option>
+              <option value="DISTRIBUTOR" ${value === "DISTRIBUTOR" ? "selected" : ""}>Distributor</option>
+            </select>
+          </label>
+        `;
+      }
+
+      if (type === "foundation" && value === "" && record?.role_code === "SUPER_ADMIN") {
+        return "";
+      }
+      
+      if (type === "foundation") {
+        return `
+          <label class="form-field" id="foundationField">
             <span>${escapeHTML(label)}</span>
             <select
               name="${escapeHTML(name)}"
@@ -1126,6 +1156,28 @@ const actions = modules[page].readOnly
         </form>
       </div>
     `;
+
+        const roleSelect = $("#userRoleSelect");
+    const foundationField = $("#foundationField");
+
+    const updateFoundationVisibility = () => {
+      if (!roleSelect || !foundationField) return;
+
+      const isSuperAdmin = roleSelect.value === "SUPER_ADMIN";
+
+      foundationField.hidden = isSuperAdmin;
+
+      if (isSuperAdmin) {
+        const foundationSelect = foundationField.querySelector("select");
+        if (foundationSelect) {
+          foundationSelect.value = "";
+        }
+      }
+    };
+
+    roleSelect?.addEventListener("change", updateFoundationVisibility);
+
+    updateFoundationVisibility();
 
     const closeModal = () => {
       modal.hidden = true;
