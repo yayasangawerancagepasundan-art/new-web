@@ -317,6 +317,9 @@
 
   async function apiRequest(path, options = {}) {
     const currentToken = getToken();
+    const startTime = performance.now();
+    const controller = new AbortController();
+    const timeoutDuration = 15000;
 
     const headers = {
       "Accept": "application/json",
@@ -327,40 +330,84 @@
       ...options.headers
     };
 
-    const response = await fetch(`${API_BASE_URL}${path}`, {
-      ...options,
-      headers
-    });
-
-    let result;
+    let timeoutId;
 
     try {
-      result = await response.json();
-    } catch {
-      throw new Error("Respons server bukan JSON yang valid.");
-    }
+      if (options.signal) {
+        if (options.signal.aborted) {
+          controller.abort();
+        } else {
+          options.signal.addEventListener(
+            "abort",
+            () => controller.abort(),
+            { once: true }
+          );
+        }
+      }
 
-    if (response.status === 401) {
-      clearSession();
-      window.location.replace(LOGIN_PAGE);
-      throw new Error("Sesi berakhir. Silakan login kembali.");
-    }
+      timeoutId = setTimeout(() => {
+        controller.abort();
+      }, timeoutDuration);
 
-    if (response.status === 403) {
-      throw new Error(
-        result.message || "Anda tidak memiliki hak akses."
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
+        signal: controller.signal
+      });
+
+      let result;
+
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error("Respons server bukan JSON yang valid.");
+      }
+
+      if (response.status === 401) {
+        clearSession();
+        window.location.replace(LOGIN_PAGE);
+        throw new Error("Sesi berakhir. Silakan login kembali.");
+      }
+
+      if (response.status === 403) {
+        throw new Error(
+          result.message || "Anda tidak memiliki hak akses."
+        );
+      }
+
+      if (!response.ok || result.success === false) {
+        throw new Error(
+          result.message || `Permintaan gagal (${response.status}).`
+        );
+      }
+
+      return result;
+
+    } catch (error) {
+      if (error.name === "AbortError") {
+        throw new Error(
+          `Permintaan ${path} melewati batas waktu 15 detik.`
+        );
+      }
+
+      if (error instanceof TypeError) {
+        throw new Error(
+          `Gagal terhubung ke server saat mengakses ${path}.`
+        );
+      }
+
+      throw error;
+
+    } finally {
+      clearTimeout(timeoutId);
+
+      const duration = Math.round(performance.now() - startTime);
+
+      console.info(
+        `[API] ${path} — ${duration} ms`
       );
     }
-
-    if (!response.ok || result.success === false) {
-      throw new Error(
-        result.message || `Permintaan gagal (${response.status}).`
-      );
-    }
-
-    return result;
   }
-
   /* =========================================================
      PEMERIKSAAN SESI
      authMe() di Worker tidak diubah.
