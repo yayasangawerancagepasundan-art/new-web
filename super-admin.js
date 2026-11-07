@@ -455,6 +455,22 @@
     }
   }
 
+  function startSessionHeartbeat() {
+  if (startSessionHeartbeat.timer) {
+    window.clearInterval(startSessionHeartbeat.timer);
+  }
+
+  startSessionHeartbeat.timer = window.setInterval(async () => {
+    if (document.visibilityState !== "visible") return;
+
+    try {
+      await apiRequest("/api/auth/me");
+    } catch (error) {
+      console.warn("Heartbeat sesi:", error.message);
+    }
+  }, 60 * 1000);
+}
+
   function renderUserIdentity() {
     if (!currentUser) return;
 
@@ -1847,6 +1863,8 @@ async function logout() {
     const valid = await verifySession();
 
     if (!valid) return;
+
+    startSessionHeartbeat();
 
     await Promise.all([
       loadDashboard(),
