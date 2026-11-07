@@ -1671,25 +1671,36 @@ const actions = modules[page].readOnly
      LOGOUT
      ========================================================= */
 
-  async function logout() {
+async function logout() {
     const confirmed = window.confirm(
       "Apakah Anda yakin ingin keluar dari Sistem Super Admin?"
     );
 
     if (!confirmed) return;
 
-    try {
-      await apiRequest("/api/auth/logout", {
-        method: "POST"
+    // Simpan token sebelum sesi lokal dihapus.
+    const currentToken = getToken();
+
+    // Hapus sesi lokal.
+    clearSession();
+
+    // Segera arahkan pengguna ke halaman login.
+    window.location.replace(LOGIN_PAGE);
+
+    // Kirim permintaan logout ke server tanpa menahan navigasi.
+    if (currentToken) {
+      fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${currentToken}`
+        },
+        keepalive: true
+      }).catch(error => {
+        console.warn("Logout server:", error.message);
       });
-    } catch (error) {
-      console.warn("Logout server:", error.message);
-    } finally {
-      clearSession();
-      window.location.replace(LOGIN_PAGE);
     }
   }
-
   /* =========================================================
      EVENT LISTENER
      ========================================================= */
