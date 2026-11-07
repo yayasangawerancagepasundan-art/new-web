@@ -126,8 +126,9 @@
         ["password", "Password Sementara", "password", true],
         ["role_code", "Role Pengguna", "role", true],
         ["foundation_id", "Yayasan", "foundation", false],
+        ["kitchen_id", "Dapur", "kitchen", false],
         ["account_status", "Status Akun", "select", true,
-          ["PENDING", "ACTIVE", "INACTIVE", "FROZEN"]]
+        ["PENDING", "ACTIVE", "INACTIVE", "FROZEN"]]
       ]
     },
 
@@ -985,9 +986,10 @@ const actions = modules[page].readOnly
 
     const isEdit = Boolean(record);
 
-    let foundationOptions = [];
+  let foundationOptions = [];
+    let kitchenOptions = [];
 
-        if (page === "dapur" || page === "pengguna") {
+      if (page === "dapur" || page === "pengguna") {
       try {
         const foundationResult = await apiRequest("/api/admin/foundations");
         const allFoundations = foundationResult.data || [];
@@ -996,6 +998,15 @@ const actions = modules[page].readOnly
           String(item.status).toUpperCase() === "ACTIVE" ||
           item.id === record?.foundation_id
         );
+        if (page === "pengguna") {
+          const kitchenResult = await apiRequest("/api/admin/kitchens");
+          const allKitchens = kitchenResult.data || [];
+
+          kitchenOptions = allKitchens.filter(item =>
+            String(item.status).toUpperCase() === "ACTIVE" ||
+            item.id === record?.kitchen_id
+          );
+        }
       } catch (error) {
         showNotification(
           `Daftar Yayasan tidak dapat dimuat: ${error.message}`,
@@ -1046,6 +1057,24 @@ const actions = modules[page].readOnly
 
       if (type === "foundation" && value === "" && record?.role_code === "SUPER_ADMIN") {
         return "";
+      }
+
+     if (type === "kitchen") {
+        return `
+          <label class="form-field" id="kitchenField">
+            <span>${escapeHTML(label)}</span>
+            <select name="${escapeHTML(name)}">
+              <option value="">Pilih Dapur</option>
+              ${kitchenOptions.map(item => `
+                <option
+                  value="${escapeHTML(item.id)}"
+                  ${String(value) === String(item.id) ? "selected" : ""}
+                >${escapeHTML(item.kitchen_code || "Tanpa kode")} — ${escapeHTML(item.kitchen_name)}</option>
+              `).join("")}
+            </select>
+            <small>Daftar Dapur akan disesuaikan dengan Yayasan yang dipilih.</small>
+          </label>
+        `;
       }
       
       if (type === "foundation") {
@@ -1157,27 +1186,82 @@ const actions = modules[page].readOnly
       </div>
     `;
 
-        const roleSelect = $("#userRoleSelect");
+    const roleSelect = $("#userRoleSelect");
     const foundationField = $("#foundationField");
+    const kitchenField = $("#kitchenField");
 
-    const updateFoundationVisibility = () => {
-      if (!roleSelect || !foundationField) return;
+    const foundationSelect = foundationField?.querySelector("select");
+    const kitchenSelect = kitchenField?.querySelector("select");
 
-      const isSuperAdmin = roleSelect.value === "SUPER_ADMIN";
+    const kitchenRoles = [
+      "PIC_YAYASAN",
+      "ASISTEN_LAPANGAN",
+      "KOORDINATOR_LAPANGAN",
+      "PENGAWAS_LAPANGAN",
+      "DISTRIBUTOR"
+    ];
+
+    const updateUserAssignmentFields = () => {
+      if (!roleSelect || !foundationField || !kitchenField) return;
+
+      const role = roleSelect.value;
+      const isSuperAdmin = role === "SUPER_ADMIN";
+      const needsKitchen = kitchenRoles.includes(role);
 
       foundationField.hidden = isSuperAdmin;
+      kitchenField.hidden = isSuperAdmin || !needsKitchen;
 
-      if (isSuperAdmin) {
-        const foundationSelect = foundationField.querySelector("select");
-        if (foundationSelect) {
-          foundationSelect.value = "";
+      if (foundationSelect) {
+        foundationSelect.required = !isSuperAdmin;
+      }
+
+      if (kitchenSelect) {
+        kitchenSelect.required = needsKitchen;
+
+        if (isSuperAdmin || !needsKitchen) {
+          kitchenSelect.value = "";
         }
+      }
+
+      if (isSuperAdmin && foundationSelect) {
+        foundationSelect.value = "";
+      }
+
+      updateKitchenOptions();
+    };
+
+    const updateKitchenOptions = () => {
+      if (!foundationSelect || !kitchenSelect) return;
+
+      const selectedFoundation = foundationSelect.value;
+      const previousKitchen = kitchenSelect.value;
+
+      const filteredKitchens = kitchenOptions.filter(item =>
+        String(item.foundation_id) === String(selectedFoundation)
+      );
+
+      kitchenSelect.innerHTML = `
+        <option value="">Pilih Dapur</option>
+        ${filteredKitchens.map(item => `
+          <option
+            value="${escapeHTML(item.id)}"
+            ${String(item.id) === String(previousKitchen) ? "selected" : ""}
+          >${escapeHTML(item.kitchen_code || "Tanpa kode")} — ${escapeHTML(item.kitchen_name)}</option>
+        `).join("")}
+      `;
+
+      if (!filteredKitchens.some(item =>
+        String(item.id) === String(previousKitchen)
+      )) {
+        kitchenSelect.value = "";
       }
     };
 
-    roleSelect?.addEventListener("change", updateFoundationVisibility);
+    roleSelect?.addEventListener("change", updateUserAssignmentFields);
 
-    updateFoundationVisibility();
+    foundationSelect?.addEventListener("change", updateKitchenOptions);
+
+    updateUserAssignmentFields();
 
     const closeModal = () => {
       modal.hidden = true;
