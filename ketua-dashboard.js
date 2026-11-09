@@ -111,6 +111,8 @@
           : formatRupiah(value);
       });
     });
+
+    setText("#withdrawAvailableBalance", formatRupiah(data.personal_balance));
     if (data.user?.name) {
       setText("#userName", data.user.name);
       setText("#topUserName", data.user.name);
@@ -153,6 +155,66 @@
     }
   }
 
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    modal.hidden = false;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    const firstInput = modal.querySelector("input, select, textarea, button");
+    firstInput?.focus();
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    modal.hidden = true;
+
+    if (!document.querySelector('.modal-backdrop.show')) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  function initModals() {
+    const modalTriggers = [
+      ["openWithdrawModal", "withdrawModal"],
+      ["openOperationalModal", "operationalModal"]
+    ];
+
+    modalTriggers.forEach(([buttonId, modalId]) => {
+      const button = document.getElementById(buttonId);
+      button?.addEventListener("click", () => openModal(modalId));
+    });
+
+    $$('[data-open-modal]').forEach(button => {
+      button.addEventListener("click", () => {
+        openModal(button.dataset.openModal);
+      });
+    });
+
+    $$(".modal-backdrop").forEach(modal => {
+      modal.querySelectorAll("[data-close-modal]").forEach(button => {
+        button.addEventListener("click", () => closeModal(modal));
+      });
+
+      modal.addEventListener("click", event => {
+        if (event.target === modal) closeModal(modal);
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+
+      const openedModal = $(".modal-backdrop.show");
+      if (openedModal) closeModal(openedModal);
+    });
+  }
+
   function initDate() {
     const now = new Date();
     $("#currentDate").textContent = new Intl.DateTimeFormat("id-ID", {
@@ -170,7 +232,12 @@
     $("#refreshButton").addEventListener("click", loadDashboard);
     $("#withdrawForm").addEventListener("submit", event => {
       event.preventDefault();
-      showToast("Pengajuan withdraw belum diaktifkan karena endpoint backend belum ditetapkan.");
+      showToast("Pengajuan withdraw belum dikirim. Endpoint backend belum ditetapkan.");
+    });
+
+    $("#operationalForm").addEventListener("submit", event => {
+      event.preventDefault();
+      showToast("Pengajuan operasional belum dikirim. Alur backend persetujuan belum ditetapkan.");
     });
     $("#logoutButton").addEventListener("click", () => {
       showToast("Logout akan diaktifkan setelah alur autentikasi dashboard ditetapkan.");
@@ -178,12 +245,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    window.scrollTo({ top: 0, behavior: "auto" });
     initDate();
     initEvents();
+    initModals();
     loadDashboard();
   });
 
   // Ekspos konfigurasi untuk tahap integrasi, bukan untuk dipanggil oleh pengguna.
   window.YayasanKetuaDashboard = { API_CONFIG, apiRequest, applyDashboardData, navigate };
 })();
-
