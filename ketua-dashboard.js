@@ -9,18 +9,18 @@
   const API_CONFIG = {
     baseUrl: "https://sppg-keuangan-dev.yayasangawerancepasundan.workers.dev",
     // Isi path setelah endpoint khusus Ketua diverifikasi pada Worker.
-    endpoints: {
-  me: "/api/ketua/me",
-  dashboard: "/api/ketua/dashboard",
-  approvals: null,
-  approvalHistory: null,
-  foundationFinance: null,
-  kitchenFinance: null,
-  personalBalance: null,
-  withdrawals: null,
-  withdrawalHistory: null,
-  reports: null,
-  notifications: null
+  endpoints: {
+  me: "/api/auth/me",
+  dashboard: "/api/ketua/overview",
+  approvals: "/api/ketua/approvals",
+  approvalHistory: "/api/ketua/approval-history",
+  foundationFinance: "/api/ketua/finance/books",
+  kitchenFinance: "/api/ketua/finance/kitchens",
+  personalBalance: "/api/ketua/personal-balance",
+  withdrawals: "/api/ketua/withdrawals",
+  withdrawalHistory: "/api/ketua/withdrawals",
+  reports: "/api/ketua/reports",
+  notifications: "/api/ketua/notifications"
 },
     credentials: "include"
   };
@@ -40,6 +40,12 @@
   };
 
   const AUTH_TOKEN_KEY = "sppg_auth_token";
+   function getAuthToken() {
+  return (
+    localStorage.getItem(AUTH_TOKEN_KEY) ||
+    sessionStorage.getItem(AUTH_TOKEN_KEY)
+  );
+}
   const LOGIN_PAGE = "./index.html";
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -279,6 +285,12 @@ async function performLogout() {
     $("#sidebarBackdrop").classList.remove("show");
   }
 
+  function getAuthToken() {
+  return localStorage.getItem("sppg_auth_token")
+    || sessionStorage.getItem("sppg_auth_token")
+    || "";
+}
+
 async function apiRequest(endpointKey, options = {}) {
   const path = API_CONFIG.endpoints[endpointKey];
 
@@ -286,10 +298,10 @@ async function apiRequest(endpointKey, options = {}) {
     throw new Error(`Endpoint "${endpointKey}" belum dikonfigurasi.`);
   }
 
-  const token = sessionStorage.getItem("sppg_auth_token");
+  const token = getAuthToken();
 
   if (!token) {
-    throw new Error("Sesi login tidak ditemukan. Silakan login kembali.");
+    throw new Error("Token login tidak ditemukan. Silakan login kembali.");
   }
 
   const response = await fetch(`${API_CONFIG.baseUrl}${path}`, {
@@ -302,10 +314,10 @@ async function apiRequest(endpointKey, options = {}) {
     }
   });
 
-  const result = await response.json();
+  const result = await response.json().catch(() => null);
 
-  if (!response.ok || result.success === false) {
-    throw new Error(result.message || `Permintaan gagal (${response.status}).`);
+  if (!response.ok) {
+    throw new Error(result?.message || `Permintaan gagal (${response.status}).`);
   }
 
   return result;
