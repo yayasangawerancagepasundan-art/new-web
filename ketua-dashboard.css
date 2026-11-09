@@ -940,3 +940,32 @@ td {
         padding-right: 16px;
     }
 }
+
+
+/* =====================================================
+   AKSI DASHBOARD DAN PERILAKU MODAL
+   ===================================================== */
+
+.overview-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+@media (max-width: 560px) {
+    .section-title-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .overview-actions {
+        width: 100%;
+    }
+}
