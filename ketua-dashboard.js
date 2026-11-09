@@ -48,16 +48,133 @@
     window.setTimeout(() => toast.classList.remove("show"), 2600);
   }
 
-  function navigate(page) {
+  let currentPage = "overview";
+  let handlingBackNavigation = false;
+
+  function renderPage(page, behavior = "smooth") {
     if (!pageMeta[page]) return;
-    $$(".page-panel").forEach(panel => panel.classList.toggle("active", panel.dataset.panel === page));
-    $$(".nav-item[data-page]").forEach(item => item.classList.toggle("active", item.dataset.page === page));
+
+    currentPage = page;
+
+    $$(".page-panel").forEach(panel => {
+      panel.classList.toggle("active", panel.dataset.panel === page);
+    });
+
+    $$(".nav-item[data-page]").forEach(item => {
+      item.classList.toggle("active", item.dataset.page === page);
+    });
+
     $("#breadcrumbCurrent").textContent = pageMeta[page][1];
     $("#pageEyebrow").textContent = pageMeta[page][0];
     $("#pageTitle").textContent = pageMeta[page][1];
     $("#pageDescription").textContent = pageMeta[page][2];
+
     closeSidebar();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior });
+  }
+
+  function navigate(page) {
+    if (!pageMeta[page]) return;
+
+    renderPage(page);
+
+    // Setiap perpindahan halaman menjadi satu langkah riwayat.
+    // Tombol Back Android akan ditangani oleh popstate, bukan logout.
+    if (!handlingBackNavigation) {
+      window.history.pushState(
+        { ketuaDashboard: true, page },
+        "",
+        `#${page}`
+      );
+    }
+  }
+
+  function initAndroidBackNavigation() {
+    const dashboardState = {
+      ketuaDashboard: true,
+      page: "overview",
+      guard: true
+    };
+
+    // Buat satu lapis pengaman agar Back Android tidak langsung
+    // meninggalkan dashboard atau memicu logout tanpa sengaja.
+    window.history.replaceState(
+      dashboardState,
+      "",
+      `${window.location.pathname}${window.location.search}#overview`
+    );
+    window.history.pushState(
+      dashboardState,
+      "",
+      `${window.location.pathname}${window.location.search}#overview`
+    );
+
+    window.addEventListener("popstate", () => {
+      handlingBackNavigation = true;
+
+      const openedModal = $(".modal-backdrop.show");
+      if (openedModal) {
+        closeModal(openedModal);
+      } else if (currentPage !== "overview") {
+        // Dari halaman mana pun, Back pertama kembali ke Dashboard.
+        renderPage("overview", "auto");
+      } else {
+        // Di Dashboard, Back hanya meminta konfirmasi keluar aplikasi.
+        const shouldExit = window.confirm(
+          "Anda sedang berada di Dashboard Ketua.\n\nKeluar dari aplikasi sekarang? Akun Anda tidak akan di-logout."
+        );
+
+        if (shouldExit) {
+          // Browser/PWA tertentu mengizinkan penutupan jendela melalui ini.
+          // Jika tidak diizinkan, halaman tetap aman dan sesi tidak dihapus.
+          window.close();
+          window.setTimeout(() => {
+            showToast("Jika aplikasi belum tertutup, gunakan tombol Home atau tutup aplikasi dari daftar aplikasi terbaru.");
+          }, 250);
+        }
+      }
+
+      // Pertahankan pengaman Back selama dashboard masih terbuka.
+      window.history.pushState(
+        dashboardState,
+        "",
+        `${window.location.pathname}${window.location.search}#overview`
+      );
+      handlingBackNavigation = false;
+    });
+  }
+
+  async function performLogout() {
+    const logoutButton = $("#logoutButton");
+    if (logoutButton) {
+      logoutButton.disabled = true;
+      logoutButton.setAttribute("aria-busy", "true");
+    }
+
+    try {
+      const response = await fetch(
+        `${API_CONFIG.baseUrl}/api/auth/logout`,
+        {
+          method: "POST",
+          credentials: API_CONFIG.credentials,
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.message || `Logout gagal (${response.status}).`);
+      }
+
+      showToast("Logout berhasil. Mengalihkan ke halaman login...");
+      window.location.replace("./index-final.html");
+    } catch (error) {
+      showToast(`Logout gagal: ${error.message}`);
+      if (logoutButton) {
+        logoutButton.disabled = false;
+        logoutButton.removeAttribute("aria-busy");
+      }
+    }
   }
 
   function openSidebar() {
@@ -240,13 +357,17 @@
       showToast("Pengajuan operasional belum dikirim. Alur backend persetujuan belum ditetapkan.");
     });
     $("#logoutButton").addEventListener("click", () => {
-      showToast("Logout akan diaktifkan setelah alur autentikasi dashboard ditetapkan.");
+      const confirmed = window.confirm(
+        "Apakah Anda yakin ingin keluar dari akun Ketua Yayasan?"
+      );
+      if (confirmed) performLogout();
     });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "auto" });
     initDate();
+    initAndroidBackNavigation();
     initEvents();
     initModals();
     loadDashboard();
