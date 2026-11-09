@@ -1,314 +1,154 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102b52">
-  <title>Dashboard Ketua Yayasan</title>
-    <link rel="stylesheet" href="./ketua-dashboard.css">
-    <script src="./ketua-dashboard.js?v=20261110-1" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Ketua Yayasan - YGRP</title>
+<link rel="stylesheet" href="./dashboard-ketua.css">
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-mark brand-logo"><img src="./ygrp-logo.png" alt="Logo YGRP"></div>
-        <div class="brand-copy">
-          <strong>YGRP</strong>
-          <span>Yayasan Gawe Rancage Pasundan</span>
-        </div>
-        <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Tutup menu">×</button>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="./ygrp-logo-reference.png" alt="Logo YGRP">
+      <strong>YGRP</strong>
+      <span>Yayasan Gawe<br>Rancage Pasundan</span>
+    </div>
+    <nav>
+      <div class="nav-caption">MENU UTAMA</div>
+      <a class="nav-item active"><span>⌂</span>Dashboard</a>
+      <div class="nav-caption">PERSETUJUAN</div>
+      <a class="nav-item"><span>▣</span>Persetujuan <b class="count">5</b></a>
+      <a class="nav-item"><span>◴</span>Riwayat Persetujuan</a>
+      <div class="nav-caption">KEUANGAN</div>
+      <a class="nav-item"><span>☷</span>Arus Kas Yayasan</a>
+      <a class="nav-item"><span>♟</span>Arus Kas Dapur</a>
+      <div class="nav-caption">AKUN</div>
+      <a class="nav-item"><span>⬡</span>Keamanan Akun</a>
+    </nav>
+    <div class="sidebar-wave"></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="hamburger" aria-label="Menu">☰</button>
+      <div class="app-icon">♜</div>
+      <div class="app-name"><strong>Sistem Keuangan SPPG</strong><span>Yayasan Gawe Rancage Pasundan</span></div>
+      <div class="top-actions">
+        <span class="bell">♟<i>1</i></span><span class="help">?</span><span class="fullscreen">⛶</span>
+        <div class="profile"><span class="avatar">●</span><div><b>Ketua Yayasan</b><small><i></i> Online</small></div><span class="chevron">⌄</span></div>
       </div>
+    </header>
 
-      <div class="role-card">
-        <div class="role-avatar">K</div>
-        <div class="role-copy">
-          <span>AREA KERJA</span>
-          <strong>Ketua Yayasan</strong>
-          <small id="userName">Memuat profil…</small>
-        </div>
-      </div>
-
-      <nav class="navigation" aria-label="Navigasi utama">
-        <p class="nav-label">MENU UTAMA</p>
-        <button class="nav-item active" data-page="overview"><span class="nav-icon">▦</span>Dashboard</button>
-        <button class="nav-item" data-page="approvals"><span class="nav-icon">✓</span>Persetujuan <span class="nav-count" id="approvalCount" hidden></span></button>
-        <button class="nav-item" data-page="approval-history"><span class="nav-icon">◷</span>Riwayat Persetujuan</button>
-
-        <p class="nav-label">PEMANTAUAN</p>
-        <button class="nav-item" data-page="foundation-finance"><span class="nav-icon">▤</span>Keuangan Yayasan</button>
-        <button class="nav-item" data-page="kitchen-finance"><span class="nav-icon">⌂</span>Keuangan Dapur</button>
-        <button class="nav-item" data-page="reports"><span class="nav-icon">▥</span>Laporan</button>
-
-        <p class="nav-label">HAK PRIBADI</p>
-        <button class="nav-item" data-page="personal-balance"><span class="nav-icon">◈</span>Saldo Pribadi</button>
-        <button class="nav-item" data-page="withdrawals"><span class="nav-icon">⇧</span>Withdraw</button>
-        <button class="nav-item" data-page="withdrawal-history"><span class="nav-icon">↺</span>Riwayat Withdraw</button>
-
-        <p class="nav-label">LAINNYA</p>
-        <button class="nav-item" data-page="notifications"><span class="nav-icon">♧</span>Notifikasi <span class="nav-count" id="notificationCount" hidden></span></button>
-        <button class="nav-item" data-page="account"><span class="nav-icon">⚙</span>Keamanan Akun</button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="connection-indicator"><span class="status-dot"></span><span id="connectionText">Menunggu koneksi data</span></div>
-        <button class="nav-item logout-item" id="logoutButton"><span class="nav-icon">↪</span>Keluar</button>
-        <small>Yayasan Gawe Rancage Pasundan</small>
-      </div>
-    </aside>
-
-    <main class="main-area">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="icon-button menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
-          <div class="app-symbol" aria-hidden="true">♜</div>
-          <span id="breadcrumbCurrent" hidden>Dashboard Ketua Yayasan</span>
-          <div class="app-heading">
-            <strong>Sistem Keuangan SPPG</strong>
-            <span>Yayasan Gawe Rancage Pasundan</span>
-          </div>
-        </div>
-        <div class="topbar-actions">
-          <button class="icon-button notification-button" data-navigate="notifications" aria-label="Notifikasi">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-              <path d="M10 21h4"></path>
-            </svg>
-            <i id="topNotificationDot" hidden></i>
-          </button>
-          <button class="icon-button help-button" type="button" aria-label="Bantuan">?</button>
-          <button class="icon-button fullscreen-button" type="button" id="fullscreenButton" aria-label="Layar penuh">⛶</button>
-          <div class="top-user">
-            <div class="top-avatar">K</div>
-            <div><strong id="topUserName">Ketua Yayasan</strong><span>● Online</span></div>
-            <span class="user-chevron">⌄</span>
-          </div>
-        </div>
-      </header>
-
-      <section class="content">
-        <div class="page-heading">
-          <div class="heading-title-wrap">
-            <span class="heading-home" aria-hidden="true">⌂</span>
-            <div>
-              <p class="eyebrow" id="pageEyebrow" hidden>RINGKASAN YAYASAN</p>
-              <h1 id="pageTitle">Dashboard Ketua Yayasan</h1>
-              <p id="pageDescription">Ringkasan keuangan, permohonan, arus kas yayasan &amp; dapur, serta saldo pribadi Ketua.</p>
-            </div>
-          </div>
-          <div class="heading-tools">
-            <button class="button button-secondary back-button" id="backButton" type="button" aria-label="Kembali ke halaman sebelumnya" hidden disabled><span aria-hidden="true">←</span> Kembali</button>
-            <span class="date-chip" id="currentDate"></span>
-            <button class="button button-secondary" id="refreshButton" aria-label="Muat ulang">↻</button>
-          </div>
-        </div>
-
-        <div class="notice notice-info" id="dataNotice">
-          <span class="notice-icon">i</span>
-          <div><strong>Menunggu koneksi backend</strong><p>Struktur frontend sudah disiapkan. Data akan ditampilkan setelah endpoint backend Ketua Yayasan dikonfigurasi. Tidak ada angka atau transaksi contoh pada halaman ini.</p></div>
-        </div>
-
-        <section class="page-panel active" id="page-overview" data-panel="overview">
-          <div class="metric-grid dashboard-metrics">
-            <article class="metric-card metric-pending"><span class="metric-icon">▤</span><div><strong class="metric-value" data-value="pendingApprovals">—</strong><b>Menunggu Persetujuan</b><small>Tahap Ketua</small></div><button class="metric-arrow" data-navigate="approvals" aria-label="Lihat persetujuan">›</button></article>
-            <article class="metric-card metric-approved"><span class="metric-icon">✓</span><div><strong class="metric-value" data-value="approvedThisMonth">—</strong><b>Disetujui</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approval-history" aria-label="Lihat persetujuan">›</button></article>
-            <article class="metric-card metric-rejected"><span class="metric-icon">×</span><div><strong class="metric-value" data-value="rejectedThisMonth">—</strong><b>Ditolak</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approval-history" aria-label="Lihat riwayat">›</button></article>
-            <article class="metric-card metric-total"><span class="metric-icon">▱</span><div><strong class="metric-value" data-value="totalRequests">—</strong><b>Total Permohonan</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approvals" aria-label="Lihat permohonan">›</button></article>
-          </div>
-
-          <div class="dashboard-top-grid">
-            <article class="surface-card cash-card">
-              <div class="card-heading"><h2>♜ &nbsp;Arus Kas Yayasan</h2><button class="text-button" data-navigate="foundation-finance">Lihat Detail →</button></div>
-              <div class="cash-row"><span class="cash-icon incoming">➜</span><b>Pemasukan</b><strong data-value="foundationIncome">—</strong></div>
-              <div class="cash-row"><span class="cash-icon outgoing">➜</span><b>Pengeluaran</b><strong data-value="foundationExpense">—</strong></div>
-              <div class="cash-row cash-total"><span class="cash-icon">▱</span><b>Saldo Yayasan</b><strong data-value="foundationBalance">—</strong></div>
-            </article>
-
-            <article class="surface-card kitchen-card">
-              <div class="card-heading"><h2>♟ &nbsp;Arus Kas Dapur SPPG</h2><button class="text-button" data-navigate="kitchen-finance">Lihat Detail →</button></div>
-              <div class="table-wrap"><table class="dashboard-table"><thead><tr><th>Dapur SPPG</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead><tbody id="dashboardKitchenRows"><tr><td colspan="4" class="table-empty">Memuat daftar dapur dari database…</td></tr></tbody></table></div>
-            </article>
-
-            <article class="surface-card personal-card">
-              <div class="card-heading"><h2>♟ &nbsp;Saldo Pribadi Ketua</h2></div>
-              <div class="personal-amount"><span>▱</span><strong data-value="personalBalance">—</strong></div>
-              <div class="personal-actions"><button class="button button-success" id="openWithdrawModal" disabled title="Pengajuan belum tersedia pada API Worker">＋ Top Up</button><button class="button button-primary" type="button" data-open-modal="withdrawModal">⇩ Withdraw</button></div>
-              <p class="personal-limit">▦ &nbsp;Limit Withdraw: <strong data-value="withdrawLimit">—</strong></p>
-            </article>
-          </div>
-
-          <div class="dashboard-middle-grid">
-            <article class="surface-card approvals-card">
-              <div class="card-heading"><h2>▣ &nbsp;Permohonan Menunggu Persetujuan Ketua</h2><button class="text-button" data-navigate="approvals">Lihat Semua →</button></div>
-              <div class="table-wrap"><table class="dashboard-table approvals-table"><thead><tr><th>No.</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Sumber</th><th>Nilai (Rp)</th><th>Status</th></tr></thead><tbody id="dashboardApprovalRows"><tr><td colspan="6" class="table-empty">Data persetujuan belum tersedia dari API.</td></tr></tbody></table></div>
-            </article>
-            <div class="dashboard-right-stack">
-              <article class="surface-card withdrawal-request-card">
-                <div class="card-heading"><h2>♧ &nbsp;Permintaan Withdraw (Saldo Pribadi)</h2><span class="live-dot"></span></div>
-                <div class="withdrawal-empty"><span class="withdrawal-avatar">●</span><div><b id="latestWithdrawalTitle">Belum ada data withdraw</b><p id="latestWithdrawalStatus">Riwayat akan tampil dari database.</p></div><button class="button button-secondary" data-navigate="withdrawals">Lihat Detail →</button></div>
-              </article>
-              <article class="surface-card withdrawal-flow-card">
-                <div class="card-heading"><h2>⇧ &nbsp;Alur Withdraw Saldo Pribadi</h2></div>
-                <div class="flow-steps"><div><span class="flow-blue">♟</span><b>Ketua</b><small>(Ajukan Withdraw)</small></div><i>→</i><div><span class="flow-orange">▤</span><b>Bendahara</b><small>(Transfer Dana)</small></div><i>→</i><div><span class="flow-green">✓</span><b>Selesai</b><small>(Saldo Diterima)</small></div></div>
-              </article>
-            </div>
-          </div>
-
-          <div class="dashboard-bottom-grid">
-            <article class="surface-card chart-card">
-              <div class="card-heading"><h2>▥ &nbsp;Grafik Arus Kas Yayasan</h2></div>
-              <div class="chart-placeholder" id="foundationCashflowChart">Grafik akan ditampilkan setelah data transaksi tersedia di database.</div>
-            </article>
-            <article class="surface-card kitchen-status-card">
-              <div class="card-heading"><h2>▣ &nbsp;Status Keuangan Dapur (Bulan Ini)</h2></div>
-              <div class="kitchen-status-content"><div class="donut-placeholder">—<small>Saldo Dapur</small></div><div id="kitchenStatusLegend" class="kitchen-legend">Menunggu data transaksi dapur.</div></div>
-            </article>
-            <article class="surface-card info-card">
-              <div class="card-heading"><h2>ⓘ &nbsp;Catatan &amp; Informasi</h2></div>
-              <ul><li>Withdraw saldo pribadi akan diinformasikan ke Bendahara untuk dilakukan transfer.</li><li>Arus kas yayasan dan arus kas dapur menjadi acuan seluruh jajaran Yayasan.</li><li>Pastikan setiap permohonan sesuai alur persetujuan: Bendahara → Ketua → Pembina.</li></ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="page-panel" id="page-approvals" data-panel="approvals">
-          <div class="surface-card">
-            <div class="card-heading"><div><h2>Daftar Persetujuan</h2><p>Permohonan yang membutuhkan keputusan sesuai kewenangan Ketua.</p></div><span class="filter-chip">Menunggu tindakan</span></div>
-            <div class="table-wrap"><table><thead><tr><th>Nomor</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Pengaju</th><th>Nilai</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="approvalsPageRows"><tr><td colspan="7" class="table-empty">Memuat permohonan…</td></tr></tbody></table></div>
-          </div>
-        </section>
-
-        <section class="page-panel" id="page-approval-history" data-panel="approval-history">
-          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Persetujuan</h2><p>Catatan keputusan yang pernah dilakukan oleh akun Ketua.</p></div></div><div class="table-wrap"><table><thead><tr><th>No.</th><th>Tanggal</th><th>Permohonan</th><th>Sumber</th><th>Nilai</th><th>Status</th></tr></thead><tbody id="approvalHistoryRows"><tr><td colspan="6" class="table-empty">Memuat riwayat…</td></tr></tbody></table></div></div>
-        </section>
-
-        <section class="page-panel" id="page-foundation-finance" data-panel="foundation-finance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Yayasan</h2><p>Pemantauan kas, bank, penerimaan, dan pengeluaran Yayasan.</p></div><span class="filter-chip">Akses pemantauan</span></div><div class="metric-grid mini"><article class="metric-card"><span>Saldo Kas</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Saldo Bank</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Penerimaan Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Pengeluaran Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Transaksi</th><th>Keterangan</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody id="foundationFinanceRows"><tr><td colspan="5" class="table-empty">Memuat transaksi D1…</td></tr></tbody></table></div></div>
-        </section>
-
-        <section class="page-panel" id="page-kitchen-finance" data-panel="kitchen-finance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Dapur</h2><p>Pemantauan laporan dapur dan pembayaran fee kepada Yayasan.</p></div><span class="filter-chip">Sesuai cakupan akses</span></div><div class="table-wrap"><table><thead><tr><th>Dapur</th><th>Periode</th><th>Fee Yayasan</th><th>Pembayaran Terverifikasi</th><th>Status Laporan</th></tr></thead><tbody id="kitchenFinanceRows"><tr><td colspan="5" class="table-empty">Memuat data dapur D1…</td></tr></tbody></table></div></div>
-        </section>
-
-        <section class="page-panel" id="page-reports" data-panel="reports">
-          <div class="surface-card"><div class="card-heading"><div><h2>Laporan</h2><p>Dokumen dan ringkasan laporan yang dapat dilihat oleh Ketua.</p></div></div><div id="reportsList" class="data-list"><p class="table-empty">Memuat daftar laporan…</p></div></div>
-        </section>
-
-        <section class="page-panel" id="page-personal-balance" data-panel="personal-balance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Saldo Pribadi</h2><p>Saldo hak pribadi berdasarkan alokasi dan hari yang telah dikonfirmasi Bendahara.</p></div><span class="filter-chip">Informasi pribadi</span></div><div class="personal-balance-card"><span>Saldo tersedia</span><strong data-value="personalBalance">—</strong><small>Saldo hanya berkurang setelah pembayaran withdraw dikonfirmasi Bendahara.</small></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody id="personalLedgerRows"><tr><td colspan="4" class="table-empty">Memuat buku saldo…</td></tr></tbody></table></div></div>
-        </section>
-
-        <section class="page-panel" id="page-withdrawals" data-panel="withdrawals">
-          <div class="surface-card">
-            <div class="card-heading">
-              <div>
-                <h2>Pengajuan Withdraw</h2>
-                <p>Ajukan penarikan saldo pribadi. Pengajuan tidak langsung mengurangi saldo.</p>
-              </div>
-              <button class="button button-primary" type="button" data-open-modal="withdrawModal">
-                Ajukan Withdraw
-              </button>
-            </div>
-            <div class="empty-state">
-              <div class="empty-icon">⇧</div>
-              <strong>Belum ada pengajuan withdraw</strong>
-              <p>Pengajuan yang dibuat akan mengikuti alur Ketua, Bendahara, dan konfirmasi pembayaran.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="page-panel" id="page-withdrawal-history" data-panel="withdrawal-history">
-          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Withdraw</h2><p>Status pengajuan dan konfirmasi pembayaran oleh Bendahara.</p></div></div><div class="table-wrap"><table><thead><tr><th>Nomor Pengajuan</th><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Bukti Pembayaran</th></tr></thead><tbody id="withdrawalHistoryRows"><tr><td colspan="5" class="table-empty">Memuat riwayat withdraw…</td></tr></tbody></table></div></div>
-        </section>
-
-        <section class="page-panel" id="page-notifications" data-panel="notifications">
-          <div class="surface-card"><div class="card-heading"><div><h2>Notifikasi</h2><p>Pemberitahuan persetujuan, laporan, dan aktivitas yang relevan.</p></div></div><div id="notificationsList" class="data-list"><p class="table-empty">Memuat notifikasi…</p></div></div>
-        </section>
-
-        <section class="page-panel" id="page-account" data-panel="account">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keamanan Akun</h2><p>Informasi akun dan pengaturan keamanan yang tersedia bagi Ketua.</p></div></div><div class="account-row"><span>Nama pengguna</span><strong id="accountName">Belum tersedia</strong></div><div class="account-row"><span>Peran</span><strong>Ketua Yayasan</strong></div><div class="account-row"><span>Status koneksi</span><strong id="accountConnection">Belum terhubung</strong></div><p class="helper-text">Pengelolaan pengguna, peran, dan konfigurasi sistem tetap menjadi kewenangan Super Admin.</p></div>
-        </section>
-
-        <footer class="page-footer"><span>© <span id="yearNow"></span> Yayasan Gawe Rancage Pasundan</span><span>Dashboard Jajaran Yayasan</span></footer>
-      </section>
-    </main>
-  </div>
-  <!-- MODAL PENGAJUAN WITHDRAW PRIBADI -->
-  <div class="modal-backdrop" id="withdrawModal" aria-hidden="true" hidden>
-    <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
-      <div class="modal-header">
-        <div>
-          <h2 id="withdrawModalTitle">Ajukan Withdraw</h2>
-          <p>Permohonan penarikan saldo pribadi.</p>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
-      </div>
-      <form id="withdrawForm">
-        <div class="modal-body">
-          <div class="modal-balance">
-            <span>Saldo pribadi tersedia</span>
-            <strong id="withdrawAvailableBalance">—</strong>
-          </div>
-          <div class="form-field">
-            <label for="withdrawAmount">Nominal penarikan (Rp)</label>
-            <input id="withdrawAmount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Masukkan nominal" required>
-          </div>
-          <div class="form-field">
-            <label for="withdrawPurpose">Tujuan / keterangan</label>
-            <textarea id="withdrawPurpose" name="purpose" rows="3" placeholder="Tuliskan keterangan pengajuan" required></textarea>
-          </div>
-          <p class="helper-text">Saldo tidak berkurang saat pengajuan dibuat. Pengurangan dilakukan setelah pembayaran dikonfirmasi Bendahara.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="button button-secondary" type="button" data-close-modal>Batal</button>
-          <button class="button button-primary" type="submit">Kirim Pengajuan</button>
-        </div>
-      </form>
+    <section class="heading">
+      <div class="heading-left"><span class="home">⌂</span><div><h1>Dashboard Ketua Yayasan</h1><p>Ringkasan keuangan, permohonan, arus kas yayasan &amp; dapur, serta saldo pribadi Ketua.</p></div></div>
+      <div class="date">▦ &nbsp;Senin, 03 November 2026</div>
     </section>
-  </div>
 
-  <!-- MODAL PENGAJUAN OPERASIONAL YAYASAN -->
-  <div class="modal-backdrop" id="operationalModal" aria-hidden="true" hidden>
-    <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="operationalModalTitle">
-      <div class="modal-header">
-        <div>
-          <h2 id="operationalModalTitle">Ajukan Operasional</h2>
-          <p>Permohonan penggunaan dana operasional Yayasan.</p>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
-      </div>
-      <form id="operationalForm">
-        <div class="modal-body">
-          <div class="form-field">
-            <label for="operationalAmount">Nominal pengajuan (Rp)</label>
-            <input id="operationalAmount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Masukkan nominal" required>
-          </div>
-          <div class="form-field">
-            <label for="operationalCategory">Kategori operasional</label>
-            <select id="operationalCategory" name="category" required>
-              <option value="">Pilih kategori</option>
-              <option value="transportasi">Transportasi</option>
-              <option value="akomodasi">Akomodasi</option>
-              <option value="administrasi">Administrasi</option>
-              <option value="perlengkapan">Perlengkapan</option>
-              <option value="komunikasi">Komunikasi</option>
-              <option value="lainnya">Lainnya</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="operationalDescription">Keterangan pengajuan</label>
-            <textarea id="operationalDescription" name="description" rows="3" placeholder="Jelaskan kebutuhan operasional" required></textarea>
-          </div>
-          <p class="helper-text">Pengajuan operasional terpisah dari saldo pribadi dan akan diteruskan ke alur persetujuan yang berwenang.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="button button-secondary" type="button" data-close-modal>Batal</button>
-          <button class="button button-primary" type="submit">Kirim Pengajuan</button>
-        </div>
-      </form>
+    <section class="metrics">
+      <article class="metric blue"><span class="metric-icon">▤</span><div><strong>5</strong><b>Menunggu Persetujuan</b><small>Tahap Ketua</small></div><span class="arrow">›</span></article>
+      <article class="metric green"><span class="metric-icon">✓</span><div><strong>12</strong><b>Disetujui</b><small>Bulan Ini</small></div><span class="arrow">›</span></article>
+      <article class="metric red"><span class="metric-icon">×</span><div><strong>1</strong><b>Ditolak</b><small>Bulan Ini</small></div><span class="arrow">›</span></article>
+      <article class="metric purple"><span class="metric-icon">▰</span><div><strong>13</strong><b>Total Permohonan</b><small>Bulan Ini</small></div><span class="arrow">›</span></article>
     </section>
-  </div>
 
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <section class="top-grid">
+      <article class="panel foundation-cash">
+        <div class="panel-title"><h2>♜ &nbsp;Arus Kas Yayasan</h2><a>Lihat Detail →</a></div>
+        <div class="cash-row"><span class="round incoming">➜</span><b>Pemasukan</b><strong>Rp 150.000.000</strong></div>
+        <div class="cash-row"><span class="round outgoing">➜</span><b>Pengeluaran</b><strong>Rp 128.500.000</strong></div>
+        <div class="cash-row total"><span class="stack">▰</span><b>Saldo Yayasan</b><strong>Rp 21.500.000</strong></div>
+      </article>
+
+      <article class="panel kitchen-cash">
+        <div class="panel-title"><h2>♟ &nbsp;Arus Kas Dapur SPPG</h2><a>Lihat Detail →</a></div>
+        <table class="kitchen-table">
+          <thead><tr><th>Dapur SPPG</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead>
+          <tbody>
+            <tr><td><i class="dot green-dot"></i>Kijang Kota</td><td>Rp 50.000.000</td><td>Rp 42.000.000</td><td>Rp 8.000.000</td></tr>
+            <tr><td><i class="dot blue-dot"></i>Tanjung Batu</td><td>Rp 45.000.000</td><td>Rp 39.500.000</td><td>Rp 5.500.000</td></tr>
+            <tr><td><i class="dot orange-dot"></i>Seri Kuala Lobam</td><td>Rp 48.000.000</td><td>Rp 46.000.000</td><td>Rp 2.000.000</td></tr>
+            <tr class="table-total"><td>Total Dapur</td><td>Rp 143.000.000</td><td>Rp 127.500.000</td><td>Rp 15.500.000</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="panel personal">
+        <div class="panel-title"><h2>♟ &nbsp;Saldo Pribadi Ketua</h2></div>
+        <div class="personal-balance"><span>▱</span><strong>Rp 2.500.000</strong></div>
+        <div class="personal-actions"><button class="topup">＋ Top Up</button><button class="withdraw">⇩ Withdraw</button></div>
+        <p class="limit">▦ &nbsp;Limit Withdraw: Rp 10.000.000 / bulan</p>
+      </article>
+    </section>
+
+    <section class="middle-grid">
+      <article class="panel approvals">
+        <div class="panel-title"><h2>▣ &nbsp;Permohonan Menunggu Persetujuan Ketua</h2><a>Lihat Semua →</a></div>
+        <table class="approval-table">
+          <thead><tr><th>No.</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Sumber</th><th>Nilai (Rp)</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>03-11-2026</td><td>Withdraw Saldo Pribadi</td><td>Saldo Ketua</td><td>2.000.000</td><td><em>Menunggu</em></td></tr>
+            <tr><td>2</td><td>02-11-2026</td><td>Penggunaan Fee Yayasan</td><td>SPPG Kijang Kota</td><td>5.000.000</td><td><em>Menunggu</em></td></tr>
+            <tr><td>3</td><td>02-11-2026</td><td>Operasional Yayasan</td><td>Yayasan (Internal)</td><td>4.000.000</td><td><em>Menunggu</em></td></tr>
+            <tr><td>4</td><td>01-11-2026</td><td>Pembelian Perlengkapan</td><td>SPPG Tanjung Batu</td><td>2.500.000</td><td><em>Menunggu</em></td></tr>
+            <tr><td>5</td><td>01-11-2026</td><td>Honorarium Tim Monitoring</td><td>SPPG Seri Kuala Lobam</td><td>6.000.000</td><td><em>Menunggu</em></td></tr>
+          </tbody>
+        </table>
+      </article>
+      <div class="right-stack">
+        <article class="panel withdraw-request">
+          <div class="panel-title"><h2>♧ &nbsp;Permintaan Withdraw (Saldo Pribadi)</h2><i class="red-dot"></i></div>
+          <div class="request-content"><span class="request-avatar">●</span><div><b>Withdraw Ketua</b><strong>Rp 2.000.000</strong><a>Menunggu Transfer Bendahara</a></div><small>Hari ini<br>10:24</small><button>Lihat Detail →</button></div>
+        </article>
+        <article class="panel withdraw-flow">
+          <div class="panel-title"><h2>⇧ &nbsp;Alur Withdraw Saldo Pribadi</h2></div>
+          <div class="flow">
+            <div><span class="flow-icon blue-flow">♟</span><b>Ketua</b><small>(Ajukan Withdraw)</small></div><i>→</i>
+            <div><span class="flow-icon orange-flow">▤</span><b>Bendahara</b><small>(Transfer Dana)</small></div><i>→</i>
+            <div><span class="flow-icon green-flow">✓</span><b>Selesai</b><small>(Saldo Diterima)</small></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="panel chart-panel">
+        <div class="panel-title"><h2>▥ &nbsp;Grafik Arus Kas Yayasan</h2></div>
+        <div class="chart">
+          <div class="y-labels"><span>200 jt</span><span>150 jt</span><span>100 jt</span><span>50 jt</span><span>0</span></div>
+          <div class="plot">
+            <div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="bars">
+              <div><span class="bar income" style="height:54%"></span><span class="bar expense" style="height:40%"></span><small>Jun</small></div>
+              <div><span class="bar income" style="height:60%"></span><span class="bar expense" style="height:44%"></span><small>Jul</small></div>
+              <div><span class="bar income" style="height:66%"></span><span class="bar expense" style="height:48%"></span><small>Agt</small></div>
+              <div><span class="bar income" style="height:72%"></span><span class="bar expense" style="height:52%"></span><small>Sep</small></div>
+              <div><span class="bar income" style="height:76%"></span><span class="bar expense" style="height:56%"></span><small>Okt</small></div>
+              <div><span class="bar income" style="height:72%"></span><span class="bar expense" style="height:53%"></span><small>Nov</small></div>
+            </div>
+            <svg class="balance-line" viewBox="0 0 500 135" preserveAspectRatio="none"><polyline points="20,105 110,103 200,102 290,100 380,99 470,98" fill="none" stroke="#12a64a" stroke-width="3"/><g fill="#fff" stroke="#12a64a" stroke-width="3"><circle cx="20" cy="105" r="5"/><circle cx="110" cy="103" r="5"/><circle cx="200" cy="102" r="5"/><circle cx="290" cy="100" r="5"/><circle cx="380" cy="99" r="5"/><circle cx="470" cy="98" r="5"/></g></svg>
+          </div>
+          <div class="chart-legend"><span><i class="legend-blue"></i>Pemasukan</span><span><i class="legend-red"></i>Pengeluaran</span><span><i class="legend-green"></i>Saldo</span></div>
+        </div>
+      </article>
+      <article class="panel kitchen-status">
+        <div class="panel-title"><h2>▣ &nbsp;Status Keuangan Dapur (Bulan Ini)</h2></div>
+        <div class="status-body"><div class="donut"><div><strong>15,5 jt</strong><small>Saldo Dapur</small></div></div><div class="legend-list">
+          <div><i class="dot green-dot"></i><span>Kijang Kota<br><b>Rp 8.000.000</b></span><strong>(51,6%)</strong></div>
+          <div><i class="dot blue-dot"></i><span>Tanjung Batu<br><b>Rp 5.500.000</b></span><strong>(35,5%)</strong></div>
+          <div><i class="dot orange-dot"></i><span>Seri Kuala Lobam<br><b>Rp 2.000.000</b></span><strong>(12,9%)</strong></div>
+        </div></div>
+      </article>
+      <article class="panel notes">
+        <div class="panel-title"><h2>ⓘ &nbsp;Catatan &amp; Informasi</h2></div>
+        <ul>
+          <li>Withdraw saldo pribadi akan diinformasikan ke Bendahara untuk dilakukan transfer.</li>
+          <li>Arus kas yayasan dan arus kas dapur menjadi acuan seluruh jajaran Yayasan.</li>
+          <li>Pastikan setiap permohonan sesuai alur: Bendahara → Ketua → Pembina.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</div>
 </body>
 </html>
