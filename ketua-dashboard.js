@@ -7,7 +7,7 @@
 
   
   const API_CONFIG = {
-    baseUrl: "https://sppg-keuangan-dev.yayasangawerancepasundan.workers.dev",
+    baseUrl: "https://sppg-keuangan-dev.yayasangawerancagepasundan.workers.dev",
     // Isi path setelah endpoint khusus Ketua diverifikasi pada Worker.
   endpoints: {
   me: "/api/auth/me",
