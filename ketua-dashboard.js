@@ -5,6 +5,7 @@
 (() => {
   "use strict";
 
+  
   const API_CONFIG = {
     baseUrl: "https://sppg-keuangan-dev.yayasangawerancepasundan.workers.dev",
     // Isi path setelah endpoint khusus Ketua diverifikasi pada Worker.
