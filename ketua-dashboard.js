@@ -49,12 +49,22 @@
   }
 
   let currentPage = "overview";
+  let navigationDepth = 0;
   let handlingBackNavigation = false;
 
-  function renderPage(page, behavior = "smooth") {
+  function updateBackButton() {
+    const button = $("#backButton");
+    if (!button) return;
+    button.hidden = navigationDepth <= 0;
+    button.disabled = navigationDepth <= 0;
+    button.setAttribute("aria-hidden", navigationDepth <= 0 ? "true" : "false");
+  }
+
+  function renderPage(page, behavior = "smooth", depth = navigationDepth) {
     if (!pageMeta[page]) return;
 
     currentPage = page;
+    navigationDepth = Math.max(0, depth);
 
     $$(".page-panel").forEach(panel => {
       panel.classList.toggle("active", panel.dataset.panel === page);
@@ -69,20 +79,20 @@
     $("#pageTitle").textContent = pageMeta[page][1];
     $("#pageDescription").textContent = pageMeta[page][2];
 
+    updateBackButton();
     closeSidebar();
     window.scrollTo({ top: 0, behavior });
   }
 
   function navigate(page) {
-    if (!pageMeta[page]) return;
+    if (!pageMeta[page] || page === currentPage) return;
 
-    renderPage(page);
+    const nextDepth = navigationDepth + 1;
+    renderPage(page, "smooth", nextDepth);
 
-    // Setiap perpindahan halaman menjadi satu langkah riwayat.
-    // Tombol Back Android akan ditangani oleh popstate, bukan logout.
     if (!handlingBackNavigation) {
       window.history.pushState(
-        { ketuaDashboard: true, page },
+        { ketuaDashboard: true, page, depth: nextDepth },
         "",
         `#${page}`
       );
@@ -90,44 +100,51 @@
   }
 
   function initAndroidBackNavigation() {
-    const dashboardState = {
+    const rootState = {
       ketuaDashboard: true,
       page: "overview",
+      depth: 0,
       guard: true
     };
 
-    // Satu state dasar agar tombol Back Android tetap berada di aplikasi.
-    // Navigasi halaman ditangani sendiri dan tidak pernah menjalankan logout.
     window.history.replaceState(
-      dashboardState,
+      rootState,
       "",
       `${window.location.pathname}${window.location.search}#overview`
     );
     window.history.pushState(
-      dashboardState,
+      rootState,
       "",
       `${window.location.pathname}${window.location.search}#overview`
     );
 
-    window.addEventListener("popstate", () => {
+    window.addEventListener("popstate", event => {
       const openedModal = $(".modal-backdrop.show");
 
       if (openedModal) {
-        closeModal(openedModal);
-      } else if (currentPage !== "overview") {
-        // Back dari modul mana pun selalu kembali ke Dashboard Ketua.
-        renderPage("overview", "auto");
-      } else {
-        // Di Dashboard, jangan panggil window.close() dan jangan arahkan
-        // pengguna ke Home. Pertahankan aplikasi pada halaman Dashboard.
-        showToast("Anda sudah berada di Dashboard Ketua.");
+        closeModal(openedModal, true);
       }
 
-      window.history.pushState(
-        dashboardState,
-        "",
-        `${window.location.pathname}${window.location.search}#overview`
-      );
+      const state = event.state;
+      if (state?.ketuaDashboard && pageMeta[state.page]) {
+        handlingBackNavigation = true;
+        renderPage(state.page, "auto", state.depth ?? 0);
+        handlingBackNavigation = false;
+      } else if (currentPage !== "overview") {
+        handlingBackNavigation = true;
+        renderPage("overview", "auto", 0);
+        handlingBackNavigation = false;
+      }
+
+      // Di root, pasang kembali guard agar Back Android tidak keluar dari aplikasi.
+      if (currentPage === "overview" && navigationDepth === 0) {
+        window.history.pushState(
+          rootState,
+          "",
+          `${window.location.pathname}${window.location.search}#overview`
+        );
+        updateBackButton();
+      }
     });
   }
 
@@ -324,19 +341,30 @@
 
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
-    if (!modal) return;
+    if (!modal || modal.classList.contains("show")) return;
 
     modal.hidden = false;
     modal.classList.add("show");
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
 
+    window.history.pushState(
+      { ketuaDashboard: true, page: currentPage, depth: navigationDepth, modal: modalId },
+      "",
+      `#${currentPage}-${modalId}`
+    );
+
     const firstInput = modal.querySelector("input, select, textarea, button");
     firstInput?.focus();
   }
 
-  function closeModal(modal) {
+  function closeModal(modal, fromPopstate = false) {
     if (!modal) return;
+
+    if (!fromPopstate && window.history.state?.modal) {
+      window.history.back();
+      return;
+    }
 
     modal.classList.remove("show");
     modal.setAttribute("aria-hidden", "true");
@@ -393,6 +421,13 @@
   function initEvents() {
     $$(".nav-item[data-page]").forEach(item => item.addEventListener("click", () => navigate(item.dataset.page)));
     $$("[data-navigate]").forEach(item => item.addEventListener("click", () => navigate(item.dataset.navigate)));
+    $("#backButton")?.addEventListener("click", () => {
+      if (navigationDepth > 0 || window.history.state?.modal) {
+        window.history.back();
+      } else {
+        showToast("Anda sudah berada di Dashboard Ketua.");
+      }
+    });
     $("#menuToggle").addEventListener("click", openSidebar);
     $("#sidebarClose").addEventListener("click", closeSidebar);
     $("#sidebarBackdrop").addEventListener("click", closeSidebar);
