@@ -54,13 +54,14 @@
   let pageHistory = [];
 
   function updateBackButton() {
-    const button = $("#backButton");
-    if (!button) return;
-    button.hidden = navigationDepth <= 0;
-    button.disabled = navigationDepth <= 0;
-    button.setAttribute("aria-hidden", navigationDepth <= 0 ? "true" : "false");
-  }
+const button = $("#backButton");
+if (!button) return;
 
+navigationDepth = pageHistory.length;
+
+button.hidden = navigationDepth <= 0;
+button.disabled = navigationDepth <= 0;
+button.setAttribute("aria-hidden", navigationDepth <= 0 ? "true" : "false");
   function renderPage(page, behavior = "smooth", depth = navigationDepth) {
     if (!pageMeta[page]) return;
 
@@ -99,6 +100,7 @@ function navigate(page) {
         ketuaDashboard: true,
         page,
         depth: nextDepth
+        pageHistory: [...pageHistory]
       },
       "",
       `#${page}`
@@ -127,21 +129,32 @@ function navigate(page) {
 
     window.addEventListener("popstate", event => {
       const openedModal = $(".modal-backdrop.show");
+      
+if (openedModal) {
+  closeModal(openedModal, true);
 
-      if (openedModal) {
-        closeModal(openedModal, true);
-      }
+  window.history.pushState(
+    {
+      ketuaDashboard: true,
+      page: currentPage,
+      depth: navigationDepth,
+      pageHistory: [...pageHistory]
+    },
+    "",
+    `#${currentPage}`
+  );
+
+  return;
+}
 
       const state = event.state;
 
 if (state?.ketuaDashboard && pageMeta[state.page]) {
   handlingBackNavigation = true;
 
-  if (state.page === "overview") {
-    pageHistory = [];
-  } else {
-    pageHistory.pop();
-  }
+  pageHistory = Array.isArray(state.pageHistory)
+    ? [...state.pageHistory]
+    : [];
 
   renderPage(state.page, "auto", pageHistory.length);
 
