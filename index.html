@@ -1489,27 +1489,31 @@ loginForm.addEventListener("submit", async function(event) {
     }
 
     // Dashboard yang tersedia pada tahap ini khusus Super Admin.
-    const roles = Array.isArray(result.roles) ? result.roles : [];
-    const isSuperAdmin = roles.some(function(item) {
-      return String(item && item.role_code || "").toUpperCase() === "SUPER_ADMIN";
-    }) || String(result.role || "").toUpperCase() === "SUPER_ADMIN";
+// Identifikasi role akun dan tentukan dashboard tujuan.
+const roles = Array.isArray(result.roles) ? result.roles : [];
 
-    if (!isSuperAdmin) {
-      // Cabut sesi yang terlanjur dibuat untuk akun yang belum memiliki
-      // akses ke halaman Super Admin.
-      try {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${result.token}`
-          }
-        });
-      } catch (logoutError) {
-        console.warn("Sesi akun non-Super Admin belum dapat dicabut otomatis.");
-      }
+const roleCodes = [
+  ...new Set(
+    roles.map(item =>
+      String(item?.role_code || "").toUpperCase()
+    )
+  )
+];
 
-      throw new Error("Akun ini belum memiliki hak akses Super Admin.");
-    }
+if (roleCodes.length !== 1) {
+  throw new Error(
+    "Role akun tidak valid atau memiliki lebih dari satu role."
+  );
+}
+
+const loginRole = roleCodes[0];
+const dashboardTarget = DASHBOARD_BY_ROLE[loginRole];
+
+if (!dashboardTarget) {
+  throw new Error(
+    "Dashboard untuk role " + loginRole + " belum dikonfigurasi."
+  );
+}
 
     // Simpan username bila Ingat Saya dipilih.
     try {
