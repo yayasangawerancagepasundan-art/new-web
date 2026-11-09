@@ -971,57 +971,21 @@ body.modal-open {
 }
 
 
-/* IZIN NOTIFIKASI PERANGKAT */
-.notification-permission-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 0 0 22px;
-  padding: 17px 20px;
-  border: 1px solid #dce7f3;
-  border-radius: 16px;
-  background: #ffffff;
+/* Navigasi kembali antarhalaman */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
 }
-
-.notification-permission-icon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  border-radius: 13px;
-  background: #edf4ff;
-  color: #245bd7;
-  font-size: 22px;
+.back-button[hidden] {
+    display: none !important;
 }
-
-.notification-permission-copy {
-  flex: 1;
-  min-width: 0;
+.back-button:disabled {
+    cursor: default;
+    opacity: .55;
 }
-
-.notification-permission-copy strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #1b2d46;
-  font-size: 14px;
-}
-
-.notification-permission-copy p {
-  margin: 0;
-  color: #718096;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
 @media (max-width: 640px) {
-  .notification-permission-card {
-    align-items: flex-start;
-    flex-wrap: wrap;
-    padding: 15px;
-  }
-
-  .notification-permission-card .button {
-    width: 100%;
-  }
+    .heading-tools {
+        flex-wrap: wrap;
+    }
 }
