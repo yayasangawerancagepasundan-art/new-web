@@ -4,8 +4,6 @@
  */
 (() => {
   "use strict";
-
-
   
   const API_CONFIG = {
     baseUrl: "https://sppg-keuangan-dev.yayasangawerancagepasundan.workers.dev",
