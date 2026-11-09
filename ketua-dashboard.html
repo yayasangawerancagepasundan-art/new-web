@@ -12,10 +12,10 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">GR</div>
+        <div class="brand-mark brand-logo"><img src="./ygrp-logo.png" alt="Logo YGRP"></div>
         <div class="brand-copy">
-          <strong>GAWE RANCAGE</strong>
-          <span>YAYASAN PASUNDAN</span>
+          <strong>YGRP</strong>
+          <span>Yayasan Gawe Rancage Pasundan</span>
         </div>
         <button class="icon-button sidebar-close" id="sidebarClose" aria-label="Tutup menu">×</button>
       </div>
@@ -61,9 +61,11 @@
       <header class="topbar">
         <div class="topbar-left">
           <button class="icon-button menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
-          <div>
-            <div class="breadcrumb">Yayasan <span>/</span> <strong id="breadcrumbCurrent">Dashboard</strong></div>
-            <p class="topbar-subtitle">Pusat pemantauan dan pengambilan keputusan</p>
+          <div class="app-symbol" aria-hidden="true">♜</div>
+          <span id="breadcrumbCurrent" hidden>Dashboard Ketua Yayasan</span>
+          <div class="app-heading">
+            <strong>Sistem Keuangan SPPG</strong>
+            <span>Yayasan Gawe Rancage Pasundan</span>
           </div>
         </div>
         <div class="topbar-actions">
@@ -74,26 +76,30 @@
             </svg>
             <i id="topNotificationDot" hidden></i>
           </button>
+          <button class="icon-button help-button" type="button" aria-label="Bantuan">?</button>
+          <button class="icon-button fullscreen-button" type="button" id="fullscreenButton" aria-label="Layar penuh">⛶</button>
           <div class="top-user">
             <div class="top-avatar">K</div>
-            <div><strong id="topUserName">Ketua Yayasan</strong><span>Jajaran Yayasan</span></div>
+            <div><strong id="topUserName">Ketua Yayasan</strong><span>● Online</span></div>
+            <span class="user-chevron">⌄</span>
           </div>
         </div>
       </header>
 
       <section class="content">
         <div class="page-heading">
-          <div>
-            <p class="eyebrow" id="pageEyebrow">RINGKASAN YAYASAN</p>
-            <h1 id="pageTitle">Dashboard Ketua</h1>
-            <p id="pageDescription">Pantau kondisi Yayasan, laporan dapur, dan hal yang memerlukan keputusan Anda.</p>
+          <div class="heading-title-wrap">
+            <span class="heading-home" aria-hidden="true">⌂</span>
+            <div>
+              <p class="eyebrow" id="pageEyebrow" hidden>RINGKASAN YAYASAN</p>
+              <h1 id="pageTitle">Dashboard Ketua Yayasan</h1>
+              <p id="pageDescription">Ringkasan keuangan, permohonan, arus kas yayasan &amp; dapur, serta saldo pribadi Ketua.</p>
+            </div>
           </div>
           <div class="heading-tools">
-            <button class="button button-secondary back-button" id="backButton" type="button" aria-label="Kembali ke halaman sebelumnya" hidden disabled>
-              <span aria-hidden="true">←</span> Kembali
-            </button>
+            <button class="button button-secondary back-button" id="backButton" type="button" aria-label="Kembali ke halaman sebelumnya" hidden disabled><span aria-hidden="true">←</span> Kembali</button>
             <span class="date-chip" id="currentDate"></span>
-            <button class="button button-secondary" id="refreshButton"><span>↻</span> Muat ulang</button>
+            <button class="button button-secondary" id="refreshButton" aria-label="Muat ulang">↻</button>
           </div>
         </div>
 
@@ -102,56 +108,64 @@
           <div><strong>Menunggu koneksi backend</strong><p>Struktur frontend sudah disiapkan. Data akan ditampilkan setelah endpoint backend Ketua Yayasan dikonfigurasi. Tidak ada angka atau transaksi contoh pada halaman ini.</p></div>
         </div>
 
-        <section class="notification-permission-card" id="notificationPermissionCard" aria-labelledby="notificationPermissionTitle">
-          <div class="notification-permission-icon" aria-hidden="true">♧</div>
-          <div class="notification-permission-copy">
-            <strong id="notificationPermissionTitle">Izin Notifikasi Perangkat</strong>
-            <p id="notificationPermissionStatus">Memeriksa dukungan notifikasi pada perangkat…</p>
-          </div>
-          <button class="button button-secondary" type="button" id="notificationPermissionButton">Aktifkan Notifikasi</button>
-        </section>
-
         <section class="page-panel active" id="page-overview" data-panel="overview">
-          <div class="section-title-row">
-            <div>
-              <h2>Ringkasan</h2>
-              <p>Informasi berdasarkan data yang tersedia dari sistem.</p>
-            </div>
-            <div class="overview-actions">
-              <button class="button button-secondary" type="button" id="openWithdrawModal">
-                Withdraw
-              </button>
-              <button class="button button-primary" type="button" id="openOperationalModal">
-                Ajukan Operasional
-              </button>
-            </div>
-          </div>
-          <div class="metric-grid">
-            <article class="metric-card"><div class="metric-top"><span>Saldo Kas Yayasan</span><span class="metric-symbol blue">Rp</span></div><strong class="metric-value" data-value="foundationBalance">—</strong><small data-meta="foundationBalance">Menunggu data backend</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Fee Dapur Terverifikasi</span><span class="metric-symbol teal">✓</span></div><strong class="metric-value" data-value="verifiedFees">—</strong><small data-meta="verifiedFees">Menunggu data backend</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Saldo Pribadi</span><span class="metric-symbol violet">◈</span></div><strong class="metric-value" data-value="personalBalance">—</strong><small data-meta="personalBalance">Menunggu data backend</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Perlu Persetujuan</span><span class="metric-symbol amber">!</span></div><strong class="metric-value" data-value="pendingApprovals">—</strong><small data-meta="pendingApprovals">Menunggu data backend</small></article>
+          <div class="metric-grid dashboard-metrics">
+            <article class="metric-card metric-pending"><span class="metric-icon">▤</span><div><strong class="metric-value" data-value="pendingApprovals">—</strong><b>Menunggu Persetujuan</b><small>Tahap Ketua</small></div><button class="metric-arrow" data-navigate="approvals" aria-label="Lihat persetujuan">›</button></article>
+            <article class="metric-card metric-approved"><span class="metric-icon">✓</span><div><strong class="metric-value" data-value="approvedThisMonth">—</strong><b>Disetujui</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approval-history" aria-label="Lihat persetujuan">›</button></article>
+            <article class="metric-card metric-rejected"><span class="metric-icon">×</span><div><strong class="metric-value" data-value="rejectedThisMonth">—</strong><b>Ditolak</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approval-history" aria-label="Lihat riwayat">›</button></article>
+            <article class="metric-card metric-total"><span class="metric-icon">▱</span><div><strong class="metric-value" data-value="totalRequests">—</strong><b>Total Permohonan</b><small>Bulan Ini</small></div><button class="metric-arrow" data-navigate="approvals" aria-label="Lihat permohonan">›</button></article>
           </div>
 
-          <div class="overview-grid">
-            <article class="surface-card">
-              <div class="card-heading"><div><h2>Aktivitas yang Memerlukan Perhatian</h2><p>Permohonan yang masuk dalam kewenangan Ketua.</p></div><button class="text-button" data-navigate="approvals">Lihat semua →</button></div>
-              <div class="empty-state compact"><div class="empty-icon">✓</div><strong>Belum ada data persetujuan</strong><p>Daftar permohonan akan muncul setelah backend terhubung.</p></div>
+          <div class="dashboard-top-grid">
+            <article class="surface-card cash-card">
+              <div class="card-heading"><h2>♜ &nbsp;Arus Kas Yayasan</h2><button class="text-button" data-navigate="foundation-finance">Lihat Detail →</button></div>
+              <div class="cash-row"><span class="cash-icon incoming">➜</span><b>Pemasukan</b><strong data-value="foundationIncome">—</strong></div>
+              <div class="cash-row"><span class="cash-icon outgoing">➜</span><b>Pengeluaran</b><strong data-value="foundationExpense">—</strong></div>
+              <div class="cash-row cash-total"><span class="cash-icon">▱</span><b>Saldo Yayasan</b><strong data-value="foundationBalance">—</strong></div>
             </article>
-            <article class="surface-card">
-              <div class="card-heading"><div><h2>Notifikasi Terbaru</h2><p>Pembaruan yang perlu diketahui.</p></div><button class="text-button" data-navigate="notifications">Lihat semua →</button></div>
-              <div class="empty-state compact"><div class="empty-icon">♧</div><strong>Belum ada notifikasi</strong><p>Notifikasi sistem akan ditampilkan di sini.</p></div>
+
+            <article class="surface-card kitchen-card">
+              <div class="card-heading"><h2>♟ &nbsp;Arus Kas Dapur SPPG</h2><button class="text-button" data-navigate="kitchen-finance">Lihat Detail →</button></div>
+              <div class="table-wrap"><table class="dashboard-table"><thead><tr><th>Dapur SPPG</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead><tbody id="dashboardKitchenRows"><tr><td colspan="4" class="table-empty">Memuat daftar dapur dari database…</td></tr></tbody></table></div>
+            </article>
+
+            <article class="surface-card personal-card">
+              <div class="card-heading"><h2>♟ &nbsp;Saldo Pribadi Ketua</h2></div>
+              <div class="personal-amount"><span>▱</span><strong data-value="personalBalance">—</strong></div>
+              <div class="personal-actions"><button class="button button-success" id="openWithdrawModal" disabled title="Pengajuan belum tersedia pada API Worker">＋ Top Up</button><button class="button button-primary" type="button" data-open-modal="withdrawModal">⇩ Withdraw</button></div>
+              <p class="personal-limit">▦ &nbsp;Limit Withdraw: <strong data-value="withdrawLimit">—</strong></p>
             </article>
           </div>
 
-          <div class="overview-grid lower-grid">
-            <article class="surface-card">
-              <div class="card-heading"><div><h2>Pemantauan Keuangan Yayasan</h2><p>Ringkasan arus kas berdasarkan pembukuan Yayasan.</p></div><button class="text-button" data-navigate="foundation-finance">Buka keuangan →</button></div>
-              <div class="empty-state compact"><div class="empty-icon">▤</div><strong>Data keuangan belum tersedia</strong><p>Grafik dan saldo akan diisi dari data aktual backend.</p></div>
+          <div class="dashboard-middle-grid">
+            <article class="surface-card approvals-card">
+              <div class="card-heading"><h2>▣ &nbsp;Permohonan Menunggu Persetujuan Ketua</h2><button class="text-button" data-navigate="approvals">Lihat Semua →</button></div>
+              <div class="table-wrap"><table class="dashboard-table approvals-table"><thead><tr><th>No.</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Sumber</th><th>Nilai (Rp)</th><th>Status</th></tr></thead><tbody id="dashboardApprovalRows"><tr><td colspan="6" class="table-empty">Data persetujuan belum tersedia dari API.</td></tr></tbody></table></div>
             </article>
-            <article class="surface-card">
-              <div class="card-heading"><div><h2>Pemantauan Dapur</h2><p>Informasi setoran fee dan laporan dapur.</p></div><button class="text-button" data-navigate="kitchen-finance">Buka pemantauan →</button></div>
-              <div class="empty-state compact"><div class="empty-icon">⌂</div><strong>Data dapur belum tersedia</strong><p>Hanya dapur yang menjadi cakupan akses akun yang akan ditampilkan.</p></div>
+            <div class="dashboard-right-stack">
+              <article class="surface-card withdrawal-request-card">
+                <div class="card-heading"><h2>♧ &nbsp;Permintaan Withdraw (Saldo Pribadi)</h2><span class="live-dot"></span></div>
+                <div class="withdrawal-empty"><span class="withdrawal-avatar">●</span><div><b id="latestWithdrawalTitle">Belum ada data withdraw</b><p id="latestWithdrawalStatus">Riwayat akan tampil dari database.</p></div><button class="button button-secondary" data-navigate="withdrawals">Lihat Detail →</button></div>
+              </article>
+              <article class="surface-card withdrawal-flow-card">
+                <div class="card-heading"><h2>⇧ &nbsp;Alur Withdraw Saldo Pribadi</h2></div>
+                <div class="flow-steps"><div><span class="flow-blue">♟</span><b>Ketua</b><small>(Ajukan Withdraw)</small></div><i>→</i><div><span class="flow-orange">▤</span><b>Bendahara</b><small>(Transfer Dana)</small></div><i>→</i><div><span class="flow-green">✓</span><b>Selesai</b><small>(Saldo Diterima)</small></div></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="dashboard-bottom-grid">
+            <article class="surface-card chart-card">
+              <div class="card-heading"><h2>▥ &nbsp;Grafik Arus Kas Yayasan</h2></div>
+              <div class="chart-placeholder" id="foundationCashflowChart">Grafik akan ditampilkan setelah data transaksi tersedia di database.</div>
+            </article>
+            <article class="surface-card kitchen-status-card">
+              <div class="card-heading"><h2>▣ &nbsp;Status Keuangan Dapur (Bulan Ini)</h2></div>
+              <div class="kitchen-status-content"><div class="donut-placeholder">—<small>Saldo Dapur</small></div><div id="kitchenStatusLegend" class="kitchen-legend">Menunggu data transaksi dapur.</div></div>
+            </article>
+            <article class="surface-card info-card">
+              <div class="card-heading"><h2>ⓘ &nbsp;Catatan &amp; Informasi</h2></div>
+              <ul><li>Withdraw saldo pribadi akan diinformasikan ke Bendahara untuk dilakukan transfer.</li><li>Arus kas yayasan dan arus kas dapur menjadi acuan seluruh jajaran Yayasan.</li><li>Pastikan setiap permohonan sesuai alur persetujuan: Bendahara → Ketua → Pembina.</li></ul>
             </article>
           </div>
         </section>
@@ -159,28 +173,28 @@
         <section class="page-panel" id="page-approvals" data-panel="approvals">
           <div class="surface-card">
             <div class="card-heading"><div><h2>Daftar Persetujuan</h2><p>Permohonan yang membutuhkan keputusan sesuai kewenangan Ketua.</p></div><span class="filter-chip">Menunggu tindakan</span></div>
-            <div class="table-wrap"><table><thead><tr><th>Nomor</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Pengaju</th><th>Nilai</th><th>Status</th><th>Aksi</th></tr></thead><tbody><tr><td colspan="7"><div class="table-empty">Belum ada data. Daftar persetujuan akan dimuat dari backend.</div></td></tr></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Nomor</th><th>Tanggal</th><th>Jenis Permohonan</th><th>Pengaju</th><th>Nilai</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="approvalsPageRows"><tr><td colspan="7" class="table-empty">Memuat permohonan…</td></tr></tbody></table></div>
           </div>
         </section>
 
         <section class="page-panel" id="page-approval-history" data-panel="approval-history">
-          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Persetujuan</h2><p>Catatan keputusan yang pernah dilakukan oleh akun Ketua.</p></div></div><div class="empty-state"><div class="empty-icon">◷</div><strong>Riwayat belum tersedia</strong><p>Riwayat keputusan akan ditampilkan setelah data backend tersedia.</p></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Persetujuan</h2><p>Catatan keputusan yang pernah dilakukan oleh akun Ketua.</p></div></div><div class="table-wrap"><table><thead><tr><th>No.</th><th>Tanggal</th><th>Permohonan</th><th>Sumber</th><th>Nilai</th><th>Status</th></tr></thead><tbody id="approvalHistoryRows"><tr><td colspan="6" class="table-empty">Memuat riwayat…</td></tr></tbody></table></div></div>
         </section>
 
         <section class="page-panel" id="page-foundation-finance" data-panel="foundation-finance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Yayasan</h2><p>Pemantauan kas, bank, penerimaan, dan pengeluaran Yayasan.</p></div><span class="filter-chip">Akses pemantauan</span></div><div class="metric-grid mini"><article class="metric-card"><span>Saldo Kas</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Saldo Bank</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Penerimaan Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Pengeluaran Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article></div><div class="empty-state"><div class="empty-icon">▤</div><strong>Rincian keuangan belum tersedia</strong><p>Ketua dapat memantau laporan, bukan mengubah jurnal atau pembukuan Bendahara.</p></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Yayasan</h2><p>Pemantauan kas, bank, penerimaan, dan pengeluaran Yayasan.</p></div><span class="filter-chip">Akses pemantauan</span></div><div class="metric-grid mini"><article class="metric-card"><span>Saldo Kas</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Saldo Bank</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Penerimaan Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article><article class="metric-card"><span>Pengeluaran Periode</span><strong class="metric-value">—</strong><small>Menunggu data backend</small></article></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Transaksi</th><th>Keterangan</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody id="foundationFinanceRows"><tr><td colspan="5" class="table-empty">Memuat transaksi D1…</td></tr></tbody></table></div></div>
         </section>
 
         <section class="page-panel" id="page-kitchen-finance" data-panel="kitchen-finance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Dapur</h2><p>Pemantauan laporan dapur dan pembayaran fee kepada Yayasan.</p></div><span class="filter-chip">Sesuai cakupan akses</span></div><div class="table-wrap"><table><thead><tr><th>Dapur</th><th>Periode</th><th>Fee Yayasan</th><th>Pembayaran Terverifikasi</th><th>Status Laporan</th></tr></thead><tbody><tr><td colspan="5"><div class="table-empty">Data dapur akan dimuat dari backend.</div></td></tr></tbody></table></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Dapur</h2><p>Pemantauan laporan dapur dan pembayaran fee kepada Yayasan.</p></div><span class="filter-chip">Sesuai cakupan akses</span></div><div class="table-wrap"><table><thead><tr><th>Dapur</th><th>Periode</th><th>Fee Yayasan</th><th>Pembayaran Terverifikasi</th><th>Status Laporan</th></tr></thead><tbody id="kitchenFinanceRows"><tr><td colspan="5" class="table-empty">Memuat data dapur D1…</td></tr></tbody></table></div></div>
         </section>
 
         <section class="page-panel" id="page-reports" data-panel="reports">
-          <div class="surface-card"><div class="card-heading"><div><h2>Laporan</h2><p>Dokumen dan ringkasan laporan yang dapat dilihat oleh Ketua.</p></div></div><div class="empty-state"><div class="empty-icon">▥</div><strong>Belum ada laporan untuk ditampilkan</strong><p>Daftar laporan akan mengikuti ketersediaan dan hak akses dari backend.</p></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Laporan</h2><p>Dokumen dan ringkasan laporan yang dapat dilihat oleh Ketua.</p></div></div><div id="reportsList" class="data-list"><p class="table-empty">Memuat daftar laporan…</p></div></div>
         </section>
 
         <section class="page-panel" id="page-personal-balance" data-panel="personal-balance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Saldo Pribadi</h2><p>Saldo hak pribadi berdasarkan alokasi dan hari yang telah dikonfirmasi Bendahara.</p></div><span class="filter-chip">Informasi pribadi</span></div><div class="personal-balance-card"><span>Saldo tersedia</span><strong data-value="personalBalance">—</strong><small>Saldo hanya berkurang setelah pembayaran withdraw dikonfirmasi Bendahara.</small></div><div class="empty-state"><div class="empty-icon">◈</div><strong>Rincian saldo belum tersedia</strong><p>Rincian alokasi, periode, dan hari terkonfirmasi akan dimuat dari backend.</p></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Saldo Pribadi</h2><p>Saldo hak pribadi berdasarkan alokasi dan hari yang telah dikonfirmasi Bendahara.</p></div><span class="filter-chip">Informasi pribadi</span></div><div class="personal-balance-card"><span>Saldo tersedia</span><strong data-value="personalBalance">—</strong><small>Saldo hanya berkurang setelah pembayaran withdraw dikonfirmasi Bendahara.</small></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody id="personalLedgerRows"><tr><td colspan="4" class="table-empty">Memuat buku saldo…</td></tr></tbody></table></div></div>
         </section>
 
         <section class="page-panel" id="page-withdrawals" data-panel="withdrawals">
@@ -203,11 +217,11 @@
         </section>
 
         <section class="page-panel" id="page-withdrawal-history" data-panel="withdrawal-history">
-          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Withdraw</h2><p>Status pengajuan dan konfirmasi pembayaran oleh Bendahara.</p></div></div><div class="table-wrap"><table><thead><tr><th>Nomor Pengajuan</th><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Bukti Pembayaran</th></tr></thead><tbody><tr><td colspan="5"><div class="table-empty">Belum ada data riwayat withdraw.</div></td></tr></tbody></table></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Riwayat Withdraw</h2><p>Status pengajuan dan konfirmasi pembayaran oleh Bendahara.</p></div></div><div class="table-wrap"><table><thead><tr><th>Nomor Pengajuan</th><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Bukti Pembayaran</th></tr></thead><tbody id="withdrawalHistoryRows"><tr><td colspan="5" class="table-empty">Memuat riwayat withdraw…</td></tr></tbody></table></div></div>
         </section>
 
         <section class="page-panel" id="page-notifications" data-panel="notifications">
-          <div class="surface-card"><div class="card-heading"><div><h2>Notifikasi</h2><p>Pemberitahuan persetujuan, laporan, dan aktivitas yang relevan.</p></div></div><div class="empty-state"><div class="empty-icon">♧</div><strong>Tidak ada notifikasi untuk ditampilkan</strong><p>Notifikasi akan muncul setelah sistem terhubung.</p></div></div>
+          <div class="surface-card"><div class="card-heading"><div><h2>Notifikasi</h2><p>Pemberitahuan persetujuan, laporan, dan aktivitas yang relevan.</p></div></div><div id="notificationsList" class="data-list"><p class="table-empty">Memuat notifikasi…</p></div></div>
         </section>
 
         <section class="page-panel" id="page-account" data-panel="account">
