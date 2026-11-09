@@ -10,18 +10,18 @@
     baseUrl: "https://sppg-keuangan-dev.yayasangawerancepasundan.workers.dev",
     // Isi path setelah endpoint khusus Ketua diverifikasi pada Worker.
     endpoints: {
-      me: null,
-      dashboard: null,
-      approvals: null,
-      approvalHistory: null,
-      foundationFinance: null,
-      kitchenFinance: null,
-      personalBalance: null,
-      withdrawals: null,
-      withdrawalHistory: null,
-      reports: null,
-      notifications: null
-    },
+  me: "/api/ketua/me",
+  dashboard: "/api/ketua/dashboard",
+  approvals: null,
+  approvalHistory: null,
+  foundationFinance: null,
+  kitchenFinance: null,
+  personalBalance: null,
+  withdrawals: null,
+  withdrawalHistory: null,
+  reports: null,
+  notifications: null
+},
     credentials: "include"
   };
 
@@ -279,18 +279,37 @@ async function performLogout() {
     $("#sidebarBackdrop").classList.remove("show");
   }
 
-  async function apiRequest(endpointKey, options = {}) {
-    const path = API_CONFIG.endpoints[endpointKey];
-    if (!path) throw new Error(`Endpoint "${endpointKey}" belum dikonfigurasi.`);
-    const response = await fetch(`${API_CONFIG.baseUrl}${path}`, {
-      ...options,
-      credentials: API_CONFIG.credentials,
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) }
-    });
-    if (!response.ok) throw new Error(`Permintaan gagal (${response.status}).`);
-    if (response.status === 204) return null;
-    return response.json();
+async function apiRequest(endpointKey, options = {}) {
+  const path = API_CONFIG.endpoints[endpointKey];
+
+  if (!path) {
+    throw new Error(`Endpoint "${endpointKey}" belum dikonfigurasi.`);
   }
+
+  const token = sessionStorage.getItem("sppg_auth_token");
+
+  if (!token) {
+    throw new Error("Sesi login tidak ditemukan. Silakan login kembali.");
+  }
+
+  const response = await fetch(`${API_CONFIG.baseUrl}${path}`, {
+    ...options,
+    credentials: API_CONFIG.credentials,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      ...(options.headers || {})
+    }
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || result.success === false) {
+    throw new Error(result.message || `Permintaan gagal (${response.status}).`);
+  }
+
+  return result;
+}
 
   // Adapter data: pemetaan properti API ke elemen UI dilakukan setelah kontrak backend final.
   function setText(selector, value) {
@@ -305,40 +324,50 @@ async function performLogout() {
     }).format(Number(value));
   }
 
-  function applyDashboardData(data) {
-    if (!data || typeof data !== "object") return;
-    const values = {
-      foundationBalance: data.foundation_balance,
-      verifiedFees: data.verified_fees,
-      personalBalance: data.personal_balance,
-      pendingApprovals: data.pending_approvals
-    };
-    Object.entries(values).forEach(([key, value]) => {
-      $$(`[data-value="${key}"]`).forEach(el => {
-        el.textContent = key === "pendingApprovals"
-          ? (value === null || value === undefined ? "—" : String(value))
-          : formatRupiah(value);
-      });
-    });
+function applyDashboardData(response) {
+  if (!response || !response.data) return;
 
-    setText("#withdrawAvailableBalance", formatRupiah(data.personal_balance));
-    if (data.user?.name) {
-      setText("#userName", data.user.name);
-      setText("#topUserName", data.user.name);
-      setText("#accountName", data.user.name);
-    }
-    if (Number.isFinite(data.pending_approvals)) {
-      const count = $("#approvalCount");
-      count.textContent = String(data.pending_approvals);
-      count.hidden = data.pending_approvals < 1;
-    }
-    if (Number.isFinite(data.unread_notifications)) {
-      const count = $("#notificationCount");
-      count.textContent = String(data.unread_notifications);
-      count.hidden = data.unread_notifications < 1;
-      $("#topNotificationDot").hidden = data.unread_notifications < 1;
-    }
+  const data = response.data;
+  const summary = data.summary || {};
+
+  const values = {
+    foundationBalance: summary.foundation_balance,
+    verifiedFees: summary.verified_fees,
+    personalBalance: summary.personal_balance,
+    pendingApprovals: summary.pending_approvals
+  };
+
+  Object.entries(values).forEach(([key, value]) => {
+    $$(`[data-value="${key}"]`).forEach(el => {
+      el.textContent = key === "pendingApprovals"
+        ? (value ?? "—")
+        : formatRupiah(value);
+    });
+  });
+
+  setText("#withdrawAvailableBalance", formatRupiah(summary.personal_balance));
+
+  const name = data.user?.full_name || data.user?.name;
+
+  if (name) {
+    setText("#userName", name);
+    setText("#topUserName", name);
+    setText("#accountName", name);
   }
+
+  if (Number.isFinite(summary.pending_approvals)) {
+    const count = $("#approvalCount");
+    count.textContent = String(summary.pending_approvals);
+    count.hidden = summary.pending_approvals < 1;
+  }
+
+  if (Number.isFinite(summary.unread_notifications)) {
+    const count = $("#notificationCount");
+    count.textContent = String(summary.unread_notifications);
+    count.hidden = summary.unread_notifications < 1;
+    $("#topNotificationDot").hidden = summary.unread_notifications < 1;
+  }
+}
 
   async function loadDashboard() {
     const notice = $("#dataNotice");
