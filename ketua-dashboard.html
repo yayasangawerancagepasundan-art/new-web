@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102b52">
   <title>Dashboard Ketua Yayasan</title>
- <link rel="stylesheet" href="ketua-dashboard.css">
-<script src="ketua-dashboard.js" defer></script>
+    <link rel="stylesheet" href="./ketua-dashboard.css">
+    <script src="./ketua-dashboard.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -67,7 +67,13 @@
           </div>
         </div>
         <div class="topbar-actions">
-          <button class="icon-button notification-button" data-navigate="notifications" aria-label="Notifikasi">♧<i id="topNotificationDot" hidden></i></button>
+          <button class="icon-button notification-button" data-navigate="notifications" aria-label="Notifikasi">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+            <i id="topNotificationDot" hidden></i>
+          </button>
           <div class="top-user">
             <div class="top-avatar">K</div>
             <div><strong id="topUserName">Ketua Yayasan</strong><span>Jajaran Yayasan</span></div>
@@ -94,7 +100,20 @@
         </div>
 
         <section class="page-panel active" id="page-overview" data-panel="overview">
-          <div class="section-title-row"><div><h2>Ringkasan</h2><p>Informasi berdasarkan data yang tersedia dari sistem.</p></div></div>
+          <div class="section-title-row">
+            <div>
+              <h2>Ringkasan</h2>
+              <p>Informasi berdasarkan data yang tersedia dari sistem.</p>
+            </div>
+            <div class="overview-actions">
+              <button class="button button-secondary" type="button" id="openWithdrawModal">
+                Withdraw
+              </button>
+              <button class="button button-primary" type="button" id="openOperationalModal">
+                Ajukan Operasional
+              </button>
+            </div>
+          </div>
           <div class="metric-grid">
             <article class="metric-card"><div class="metric-top"><span>Saldo Kas Yayasan</span><span class="metric-symbol blue">Rp</span></div><strong class="metric-value" data-value="foundationBalance">—</strong><small data-meta="foundationBalance">Menunggu data backend</small></article>
             <article class="metric-card"><div class="metric-top"><span>Fee Dapur Terverifikasi</span><span class="metric-symbol teal">✓</span></div><strong class="metric-value" data-value="verifiedFees">—</strong><small data-meta="verifiedFees">Menunggu data backend</small></article>
@@ -153,12 +172,21 @@
         </section>
 
         <section class="page-panel" id="page-withdrawals" data-panel="withdrawals">
-          <div class="surface-card"><div class="card-heading"><div><h2>Pengajuan Withdraw</h2><p>Ajukan penarikan saldo pribadi. Pengajuan tidak langsung mengurangi saldo.</p></div></div>
-            <form id="withdrawForm" class="withdraw-form">
-              <div class="form-field"><label for="withdrawAmount">Nominal penarikan (Rp)</label><input id="withdrawAmount" name="amount" inputmode="numeric" placeholder="Masukkan nominal" required disabled><small>Form akan aktif setelah endpoint pengajuan withdraw tersedia.</small></div>
-              <div class="form-field"><label for="withdrawPurpose">Tujuan / keterangan</label><textarea id="withdrawPurpose" name="purpose" rows="3" placeholder="Tuliskan keterangan pengajuan" required disabled></textarea></div>
-              <div class="form-actions"><button class="button button-primary" type="submit" disabled>Ajukan Withdraw</button><span class="helper-text">Belum terhubung ke backend.</span></div>
-            </form>
+          <div class="surface-card">
+            <div class="card-heading">
+              <div>
+                <h2>Pengajuan Withdraw</h2>
+                <p>Ajukan penarikan saldo pribadi. Pengajuan tidak langsung mengurangi saldo.</p>
+              </div>
+              <button class="button button-primary" type="button" data-open-modal="withdrawModal">
+                Ajukan Withdraw
+              </button>
+            </div>
+            <div class="empty-state">
+              <div class="empty-icon">⇧</div>
+              <strong>Belum ada pengajuan withdraw</strong>
+              <p>Pengajuan yang dibuat akan mengikuti alur Ketua, Bendahara, dan konfirmasi pembayaran.</p>
+            </div>
           </div>
         </section>
 
@@ -178,8 +206,83 @@
       </section>
     </main>
   </div>
+  <!-- MODAL PENGAJUAN WITHDRAW PRIBADI -->
+  <div class="modal-backdrop" id="withdrawModal" aria-hidden="true" hidden>
+    <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="withdrawModalTitle">Ajukan Withdraw</h2>
+          <p>Permohonan penarikan saldo pribadi.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
+      </div>
+      <form id="withdrawForm">
+        <div class="modal-body">
+          <div class="modal-balance">
+            <span>Saldo pribadi tersedia</span>
+            <strong id="withdrawAvailableBalance">—</strong>
+          </div>
+          <div class="form-field">
+            <label for="withdrawAmount">Nominal penarikan (Rp)</label>
+            <input id="withdrawAmount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Masukkan nominal" required>
+          </div>
+          <div class="form-field">
+            <label for="withdrawPurpose">Tujuan / keterangan</label>
+            <textarea id="withdrawPurpose" name="purpose" rows="3" placeholder="Tuliskan keterangan pengajuan" required></textarea>
+          </div>
+          <p class="helper-text">Saldo tidak berkurang saat pengajuan dibuat. Pengurangan dilakukan setelah pembayaran dikonfirmasi Bendahara.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="button button-secondary" type="button" data-close-modal>Batal</button>
+          <button class="button button-primary" type="submit">Kirim Pengajuan</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- MODAL PENGAJUAN OPERASIONAL YAYASAN -->
+  <div class="modal-backdrop" id="operationalModal" aria-hidden="true" hidden>
+    <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="operationalModalTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="operationalModalTitle">Ajukan Operasional</h2>
+          <p>Permohonan penggunaan dana operasional Yayasan.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
+      </div>
+      <form id="operationalForm">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="operationalAmount">Nominal pengajuan (Rp)</label>
+            <input id="operationalAmount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Masukkan nominal" required>
+          </div>
+          <div class="form-field">
+            <label for="operationalCategory">Kategori operasional</label>
+            <select id="operationalCategory" name="category" required>
+              <option value="">Pilih kategori</option>
+              <option value="transportasi">Transportasi</option>
+              <option value="akomodasi">Akomodasi</option>
+              <option value="administrasi">Administrasi</option>
+              <option value="perlengkapan">Perlengkapan</option>
+              <option value="komunikasi">Komunikasi</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="operationalDescription">Keterangan pengajuan</label>
+            <textarea id="operationalDescription" name="description" rows="3" placeholder="Jelaskan kebutuhan operasional" required></textarea>
+          </div>
+          <p class="helper-text">Pengajuan operasional terpisah dari saldo pribadi dan akan diteruskan ke alur persetujuan yang berwenang.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="button button-secondary" type="button" data-close-modal>Batal</button>
+          <button class="button button-primary" type="submit">Kirim Pengajuan</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
-
