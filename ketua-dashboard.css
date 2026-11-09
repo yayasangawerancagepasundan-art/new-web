@@ -989,3 +989,8 @@ body.modal-open {
         flex-wrap: wrap;
     }
 }
+
+/* Pastikan elemen dengan atribut hidden tidak ditampilkan */
+[hidden] {
+  display: none !important;
+}
