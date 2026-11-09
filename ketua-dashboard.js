@@ -51,6 +51,7 @@
   let currentPage = "overview";
   let navigationDepth = 0;
   let handlingBackNavigation = false;
+  let pageHistory = [];
 
   function updateBackButton() {
     const button = $("#backButton");
@@ -84,20 +85,26 @@
     window.scrollTo({ top: 0, behavior });
   }
 
-  function navigate(page) {
-    if (!pageMeta[page] || page === currentPage) return;
+function navigate(page) {
+  if (!pageMeta[page] || page === currentPage) return;
 
-    const nextDepth = navigationDepth + 1;
-    renderPage(page, "smooth", nextDepth);
+  pageHistory.push(currentPage);
 
-    if (!handlingBackNavigation) {
-      window.history.pushState(
-        { ketuaDashboard: true, page, depth: nextDepth },
-        "",
-        `#${page}`
-      );
-    }
+  const nextDepth = pageHistory.length;
+  renderPage(page, "smooth", nextDepth);
+
+  if (!handlingBackNavigation) {
+    window.history.pushState(
+      {
+        ketuaDashboard: true,
+        page,
+        depth: nextDepth
+      },
+      "",
+      `#${page}`
+    );
   }
+}
 
   function initAndroidBackNavigation() {
     const rootState = {
@@ -126,15 +133,20 @@
       }
 
       const state = event.state;
-      if (state?.ketuaDashboard && pageMeta[state.page]) {
-        handlingBackNavigation = true;
-        renderPage(state.page, "auto", state.depth ?? 0);
-        handlingBackNavigation = false;
-      } else if (currentPage !== "overview") {
-        handlingBackNavigation = true;
-        renderPage("overview", "auto", 0);
-        handlingBackNavigation = false;
-      }
+
+if (state?.ketuaDashboard && pageMeta[state.page]) {
+  handlingBackNavigation = true;
+
+  if (state.page === "overview") {
+    pageHistory = [];
+  } else {
+    pageHistory.pop();
+  }
+
+  renderPage(state.page, "auto", pageHistory.length);
+
+  handlingBackNavigation = false;
+}
 
       // Di root, pasang kembali guard agar Back Android tidak keluar dari aplikasi.
       if (currentPage === "overview" && navigationDepth === 0) {
