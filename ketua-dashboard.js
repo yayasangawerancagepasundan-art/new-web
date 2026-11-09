@@ -39,6 +39,9 @@
     account: ["PENGATURAN", "Keamanan Akun", "Informasi akun Ketua Yayasan."]
   };
 
+  const AUTH_TOKEN_KEY = "sppg_auth_token";
+  const LOGIN_PAGE = "./index.html";
+
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -248,6 +251,7 @@ async function performLogout() {
   sessionStorage.removeItem("sppg_auth_token");
 
   // Langsung kembali ke halaman login.
+  clearSession();
   window.location.replace(LOGIN_PAGE);
 
   // Cabut sesi di server tanpa menahan pengalihan.
