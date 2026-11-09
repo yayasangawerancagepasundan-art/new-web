@@ -96,8 +96,8 @@
       guard: true
     };
 
-    // Buat satu lapis pengaman agar Back Android tidak langsung
-    // meninggalkan dashboard atau memicu logout tanpa sengaja.
+    // Satu state dasar agar tombol Back Android tetap berada di aplikasi.
+    // Navigasi halaman ditangani sendiri dan tidak pernah menjalankan logout.
     window.history.replaceState(
       dashboardState,
       "",
@@ -110,38 +110,88 @@
     );
 
     window.addEventListener("popstate", () => {
-      handlingBackNavigation = true;
-
       const openedModal = $(".modal-backdrop.show");
+
       if (openedModal) {
         closeModal(openedModal);
       } else if (currentPage !== "overview") {
-        // Dari halaman mana pun, Back pertama kembali ke Dashboard.
+        // Back dari modul mana pun selalu kembali ke Dashboard Ketua.
         renderPage("overview", "auto");
       } else {
-        // Di Dashboard, Back hanya meminta konfirmasi keluar aplikasi.
-        const shouldExit = window.confirm(
-          "Anda sedang berada di Dashboard Ketua.\n\nKeluar dari aplikasi sekarang? Akun Anda tidak akan di-logout."
-        );
-
-        if (shouldExit) {
-          // Browser/PWA tertentu mengizinkan penutupan jendela melalui ini.
-          // Jika tidak diizinkan, halaman tetap aman dan sesi tidak dihapus.
-          window.close();
-          window.setTimeout(() => {
-            showToast("Jika aplikasi belum tertutup, gunakan tombol Home atau tutup aplikasi dari daftar aplikasi terbaru.");
-          }, 250);
-        }
+        // Di Dashboard, jangan panggil window.close() dan jangan arahkan
+        // pengguna ke Home. Pertahankan aplikasi pada halaman Dashboard.
+        showToast("Anda sudah berada di Dashboard Ketua.");
       }
 
-      // Pertahankan pengaman Back selama dashboard masih terbuka.
       window.history.pushState(
         dashboardState,
         "",
         `${window.location.pathname}${window.location.search}#overview`
       );
-      handlingBackNavigation = false;
     });
+  }
+
+  function updateNotificationPermissionUI() {
+    const status = $("#notificationPermissionStatus");
+    const button = $("#notificationPermissionButton");
+
+    if (!status || !button) return;
+
+    if (!("Notification" in window)) {
+      status.textContent = "Browser/perangkat ini belum mendukung notifikasi web.";
+      button.disabled = true;
+      button.textContent = "Tidak didukung";
+      return;
+    }
+
+    const permission = Notification.permission;
+
+    if (permission === "granted") {
+      status.textContent = "Izin notifikasi sudah diberikan pada perangkat ini.";
+      button.textContent = "Notifikasi Aktif";
+      button.disabled = true;
+    } else if (permission === "denied") {
+      status.textContent = "Izin pernah ditolak. Ubah izin Notifikasi melalui pengaturan situs di browser/perangkat.";
+      button.textContent = "Buka Petunjuk Izin";
+      button.disabled = false;
+    } else {
+      status.textContent = "Aktifkan izin agar perangkat dapat menerima pemberitahuan dari aplikasi.";
+      button.textContent = "Aktifkan Notifikasi";
+      button.disabled = false;
+    }
+  }
+
+  async function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+      updateNotificationPermissionUI();
+      return;
+    }
+
+    if (!window.isSecureContext) {
+      showToast("Izin notifikasi memerlukan HTTPS.");
+      return;
+    }
+
+    if (Notification.permission === "denied") {
+      showToast("Buka pengaturan situs pada browser, lalu izinkan Notifikasi untuk aplikasi ini.");
+      return;
+    }
+
+    try {
+      // Harus dipanggil dari klik pengguna; browser menampilkan dialog resminya.
+      const permission = await Notification.requestPermission();
+      updateNotificationPermissionUI();
+
+      if (permission === "granted") {
+        showToast("Izin notifikasi perangkat berhasil diaktifkan.");
+      } else if (permission === "denied") {
+        showToast("Izin notifikasi ditolak. Anda dapat mengubahnya di pengaturan perangkat.");
+      } else {
+        showToast("Izin notifikasi belum diputuskan.");
+      }
+    } catch (error) {
+      showToast(`Permintaan izin notifikasi gagal: ${error.message}`);
+    }
   }
 
   async function performLogout() {
@@ -347,6 +397,7 @@
     $("#sidebarClose").addEventListener("click", closeSidebar);
     $("#sidebarBackdrop").addEventListener("click", closeSidebar);
     $("#refreshButton").addEventListener("click", loadDashboard);
+    $("#notificationPermissionButton")?.addEventListener("click", requestNotificationPermission);
     $("#withdrawForm").addEventListener("submit", event => {
       event.preventDefault();
       showToast("Pengajuan withdraw belum dikirim. Endpoint backend belum ditetapkan.");
@@ -370,6 +421,7 @@
     initAndroidBackNavigation();
     initEvents();
     initModals();
+    updateNotificationPermissionUI();
     loadDashboard();
   });
 
