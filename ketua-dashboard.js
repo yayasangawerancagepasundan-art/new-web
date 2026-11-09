@@ -22,7 +22,7 @@
   reports: "/api/ketua/reports",
   notifications: "/api/ketua/notifications"
 },
-    credentials: "include"
+    credentials: "omit"
   };
 
   const pageMeta = {
