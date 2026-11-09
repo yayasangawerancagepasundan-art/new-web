@@ -237,38 +237,32 @@ if (state?.ketuaDashboard && pageMeta[state.page]) {
     }
   }
 
-  async function performLogout() {
-    const logoutButton = $("#logoutButton");
-    if (logoutButton) {
-      logoutButton.disabled = true;
-      logoutButton.setAttribute("aria-busy", "true");
-    }
+async function performLogout() {
+  const token =
+    localStorage.getItem("sppg_auth_token") ||
+    sessionStorage.getItem("sppg_auth_token");
 
-    try {
-      const response = await fetch(
-        `${API_CONFIG.baseUrl}/api/auth/logout`,
-        {
-          method: "POST",
-          credentials: API_CONFIG.credentials,
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+  // Hapus sesi lokal terlebih dahulu.
+  localStorage.removeItem("sppg_auth_token");
+  sessionStorage.removeItem("sppg_auth_token");
 
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success !== true) {
-        throw new Error(result.message || `Logout gagal (${response.status}).`);
-      }
+  // Langsung kembali ke halaman login.
+  window.location.replace("./index-final.html");
 
-      showToast("Logout berhasil. Mengalihkan ke halaman login...");
-      window.location.replace("./index-final.html");
-    } catch (error) {
-      showToast(`Logout gagal: ${error.message}`);
-      if (logoutButton) {
-        logoutButton.disabled = false;
-        logoutButton.removeAttribute("aria-busy");
-      }
-    }
+  // Cabut sesi di server tanpa menahan pengalihan.
+  if (token) {
+    fetch(`${API_CONFIG.baseUrl}/api/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      keepalive: true
+    }).catch(error => {
+      console.warn("Logout server:", error.message);
+    });
   }
+}
 
   function openSidebar() {
     $("#sidebar").classList.add("open");
