@@ -53,7 +53,7 @@
   let handlingBackNavigation = false;
   let pageHistory = [];
 
-  function updateBackButton() {
+function updateBackButton() {
 const button = $("#backButton");
 if (!button) return;
 
@@ -62,6 +62,7 @@ navigationDepth = pageHistory.length;
 button.hidden = navigationDepth <= 0;
 button.disabled = navigationDepth <= 0;
 button.setAttribute("aria-hidden", navigationDepth <= 0 ? "true" : "false");
+}
   function renderPage(page, behavior = "smooth", depth = navigationDepth) {
     if (!pageMeta[page]) return;
 
@@ -99,7 +100,7 @@ function navigate(page) {
       {
         ketuaDashboard: true,
         page,
-        depth: nextDepth
+        depth: nextDepth,
         pageHistory: [...pageHistory]
       },
       "",
