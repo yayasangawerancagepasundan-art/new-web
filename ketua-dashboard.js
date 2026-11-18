@@ -318,6 +318,30 @@ async function apiRequest(endpointKey, options = {}) {
   return result;
 }
 
+function setBackendStatus(status) {
+  const indicator = $("#backendStatus");
+  const label = $("#backendStatusText");
+
+  if (!indicator || !label) return;
+
+  indicator.classList.remove(
+    "is-checking",
+    "is-connected",
+    "is-failed"
+  );
+
+  if (status === "connected") {
+    indicator.classList.add("is-connected");
+    label.textContent = "Terhubung";
+  } else if (status === "failed") {
+    indicator.classList.add("is-failed");
+    label.textContent = "Gagal Terhubung";
+  } else {
+    indicator.classList.add("is-checking");
+    label.textContent = "Mempersiapkan Backend";
+  }
+}
+
   // Adapter data dari endpoint Dashboard Ketua yang membaca D1.
   function setText(selector, value) {
     const element = $(selector);
@@ -617,24 +641,50 @@ function applyDashboardData(response) {
     }));
   }
 
-  async function loadDashboard() {
-    const notice = $("#dataNotice");
-    try {
-      const response = await apiRequest("dashboard");
-      applyDashboardData(response);
-      notice.hidden = true;
-      $("#connectionText").textContent = "Database D1 terhubung";
-      $("#accountConnection").textContent = "Terhubung";
-      $(".status-dot").style.background = "#36c79a";
-      await loadSupportingData();
-    } catch (error) {
-      $("#connectionText").textContent = "Koneksi database bermasalah";
-      $("#accountConnection").textContent = "Tidak terhubung";
-      notice.hidden = false;
-      notice.querySelector("strong").textContent = "Data database belum dapat dimuat";
-      notice.querySelector("p").textContent = error.message;
+ async function loadDashboard() {
+  const notice = $("#dataNotice");
+  const refreshButton = $("#refreshButton");
+
+  setBackendStatus("checking");
+
+  if (refreshButton) {
+    refreshButton.disabled = true;
+  }
+
+  try {
+    const response = await apiRequest("dashboard");
+
+    applyDashboardData(response);
+
+    notice.hidden = true;
+
+    setBackendStatus("connected");
+
+    $("#connectionText").textContent = "Backend terhubung";
+    $("#accountConnection").textContent = "Terhubung";
+
+    $(".status-dot").style.background = "#36c79a";
+
+    await loadSupportingData();
+
+  } catch (error) {
+    setBackendStatus("failed");
+
+    $("#connectionText").textContent = "Koneksi backend bermasalah";
+    $("#accountConnection").textContent = "Tidak terhubung";
+
+    notice.hidden = false;
+    notice.querySelector("strong").textContent =
+      "Gagal terhubung ke backend";
+
+    notice.querySelector("p").textContent = error.message;
+
+  } finally {
+    if (refreshButton) {
+      refreshButton.disabled = false;
     }
   }
+}
 
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
