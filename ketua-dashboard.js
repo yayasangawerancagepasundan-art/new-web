@@ -25,7 +25,7 @@
     approvals: ["KEPUTUSAN", "Persetujuan", "Tinjau permohonan yang masuk dalam batas kewenangan Ketua."],
     "approval-history": ["CATATAN KEPUTUSAN", "Riwayat Persetujuan", "Lihat keputusan yang pernah dilakukan oleh akun Ketua."],
     "foundation-finance": ["PEMANTAUAN", "Keuangan Yayasan", "Pantau arus kas dan laporan keuangan Yayasan tanpa mengubah pembukuan."],
-    "kitchen-finance": ["PEMANTAUAN", "Keuangan Dapur", "Pantau laporan dapur dan pembayaran fee Yayasan sesuai cakupan akses."],
+    "kitchen-finance": ["PEMANTAUAN", "Keuangan Dapur", "Pantau seluruh uang masuk, uang keluar, saldo kas/bank, dan Fee Yayasan sesuai cakupan akses."],
     reports: ["DOKUMEN", "Laporan", "Lihat laporan keuangan dan operasional yang tersedia untuk Ketua."],
     "personal-balance": ["HAK PRIBADI", "Saldo Pribadi", "Pantau saldo pribadi berdasarkan alokasi dan hari yang dikonfirmasi Bendahara."],
     withdrawals: ["HAK PRIBADI", "Pengajuan Withdraw", "Ajukan penarikan saldo pribadi. Pengajuan tidak langsung mengurangi saldo."],
@@ -474,17 +474,114 @@ function applyDashboardData(response) {
     target.innerHTML=rows.map(t=>`<tr><td>${dateText(t.transaction_date)}</td><td>${escapeHtml(t.transaction_number)}</td><td>${escapeHtml(t.description)}</td><td>${escapeHtml(t.transaction_type)}</td><td>${rupiah(t.total_amount)}</td></tr>`).join("");
   }
 
+  // Kontrak frontend Keuangan Dapur: data aktual disediakan backend Worker.
+  // Tidak ada fallback angka/transaksi contoh.
+  let kitchenFinancePayload = null;
+
+  function readKitchenFilterState() {
+    return {
+      kitchenId: $("#kitchenFinanceKitchen")?.value || "",
+      from: $("#kitchenFinanceFrom")?.value || "",
+      to: $("#kitchenFinanceTo")?.value || "",
+      type: $("#kitchenFinanceType")?.value || "ALL",
+      search: ($("#kitchenFinanceSearch")?.value || "").trim().toLowerCase()
+    };
+  }
+
+  function renderKitchenFinance(payload) {
+    kitchenFinancePayload = payload?.data || null;
+    const data = kitchenFinancePayload;
+    const rowsEl = $("#kitchenFinanceRows");
+    if (!data) {
+      if (rowsEl) rowsEl.innerHTML = '<tr><td colspan="9" class="table-empty">Data keuangan dapur belum tersedia dari backend.</td></tr>';
+      return;
+    }
+
+    const summary = data.summary || {};
+    const numberKeys = ["total_income", "total_expense", "cash_balance", "bank_balance", "total_balance"];
+    numberKeys.forEach(key => {
+      const el = $(`[data-kitchen-value="${key}"]`);
+      if (el) el.textContent = summary[key] === null || summary[key] === undefined ? "—" : rupiah(summary[key]);
+    });
+    const countEl = $('[data-kitchen-value="transaction_count"]');
+    if (countEl) countEl.textContent = summary.transaction_count == null ? "—" : new Intl.NumberFormat("id-ID").format(summary.transaction_count);
+
+    const period = data.period || {};
+    setText("#kitchenFinancePeriod", period.start_date && period.end_date ? `${dateText(period.start_date)} – ${dateText(period.end_date)}` : "Semua periode tersedia");
+
+    const kitchenSelect = $("#kitchenFinanceKitchen");
+    const kitchens = Array.isArray(data.kitchens) ? data.kitchens : [];
+    if (kitchenSelect && kitchenSelect.options.length <= 1 && kitchens.length) {
+      kitchenSelect.innerHTML = '<option value="">Semua dapur dalam Yayasan</option>' + kitchens.map(k => `<option value="${escapeHtml(k.kitchen_id)}">${escapeHtml(k.kitchen_name)}</option>`).join("");
+    }
+
+    const filter = readKitchenFilterState();
+    const allTransactions = Array.isArray(data.transactions) ? data.transactions : [];
+    const filtered = allTransactions.filter(t => {
+      if (filter.kitchenId && String(t.kitchen_id) !== filter.kitchenId) return false;
+      const date = String(t.transaction_date || "").slice(0, 10);
+      if (filter.from && date < filter.from) return false;
+      if (filter.to && date > filter.to) return false;
+      const flow = String(t.flow_type || "").toUpperCase();
+      if (filter.type !== "ALL" && flow !== filter.type) return false;
+      if (filter.search) {
+        const haystack = [t.transaction_number, t.description, t.category_name, t.account_name, t.account_code, t.kitchen_name]
+          .filter(Boolean).join(" ").toLowerCase();
+        if (!haystack.includes(filter.search)) return false;
+      }
+      return true;
+    });
+
+    if (rowsEl) {
+      rowsEl.innerHTML = filtered.length ? filtered.map(t => {
+        const isIn = String(t.flow_type || "").toUpperCase() === "IN";
+        const amount = t.amount == null ? null : rupiah(t.amount);
+        const evidence = t.evidence_url ? `<a class="evidence-link" href="${escapeHtml(t.evidence_url)}" target="_blank" rel="noopener noreferrer">Lihat bukti</a>` : "—";
+        return `<tr>
+          <td>${dateText(t.transaction_date)}</td>
+          <td>${escapeHtml(t.transaction_number || "—")}</td>
+          <td class="transaction-description"><strong>${escapeHtml(t.description || "—")}</strong><small>${escapeHtml(t.kitchen_name || "")}</small></td>
+          <td>${escapeHtml(t.category_name || t.account_code || "—")}</td>
+          <td>${escapeHtml(t.account_name || "—")}</td>
+          <td class="amount-in">${isIn ? (amount || "—") : "—"}</td>
+          <td class="amount-out">${!isIn ? (amount || "—") : "—"}</td>
+          <td><span class="status-pill">${escapeHtml(statusText(t.status || "POSTED"))}</span></td>
+          <td>${evidence}</td>
+        </tr>`;
+      }).join("") : '<tr><td colspan="9" class="table-empty">Tidak ada transaksi yang cocok dengan filter pada data backend.</td></tr>';
+    }
+    setText("#kitchenFinanceResultCount", `${filtered.length} transaksi`);
+
+    const fee = data.fee_summary || {};
+    ["billed_amount", "paid_amount", "verified_amount", "outstanding_amount"].forEach(key => {
+      const el = $(`[data-kitchen-fee="${key}"]`);
+      if (el) el.textContent = fee[key] == null ? "—" : rupiah(fee[key]);
+    });
+    const feeRows = $("#kitchenFeeRows");
+    const fees = Array.isArray(data.fee_rows) ? data.fee_rows : [];
+    if (feeRows) feeRows.innerHTML = fees.length ? fees.map(f => `<tr><td>${escapeHtml(f.kitchen_name || "—")}</td><td>${dateText(f.period_start)} – ${dateText(f.period_end)}</td><td>${f.billed_amount == null ? "—" : rupiah(f.billed_amount)}</td><td>${f.paid_amount == null ? "—" : rupiah(f.paid_amount)}</td><td><span class="status-pill">${escapeHtml(statusText(f.payment_status))}</span></td></tr>`).join("") : '<tr><td colspan="5" class="table-empty">Belum ada rekap Fee Yayasan pada data backend.</td></tr>';
+  }
+
+  function initKitchenFinanceFilters() {
+    ["#kitchenFinanceKitchen", "#kitchenFinanceFrom", "#kitchenFinanceTo", "#kitchenFinanceType", "#kitchenFinanceSearch"].forEach(selector => {
+      $(selector)?.addEventListener(selector.endsWith("Search") ? "input" : "change", () => {
+        if (kitchenFinancePayload) renderKitchenFinance({ data: kitchenFinancePayload });
+      });
+    });
+    $("#kitchenFinanceReset")?.addEventListener("click", () => {
+      ["#kitchenFinanceKitchen", "#kitchenFinanceFrom", "#kitchenFinanceTo", "#kitchenFinanceSearch"].forEach(s => { if ($(s)) $(s).value = ""; });
+      if ($("#kitchenFinanceType")) $("#kitchenFinanceType").value = "ALL";
+      if (kitchenFinancePayload) renderKitchenFinance({ data: kitchenFinancePayload });
+    });
+  }
+
   async function loadSupportingData() {
     const tasks = [
       ["approvals", async r=>renderApprovalRows(r.data,"#dashboardApprovalRows",false)],
       ["approvals", async r=>renderApprovalRows(r.data,"#approvalsPageRows",true)],
       ["approval-history", async r=>renderApprovalRows(r.data,"#approvalHistoryRows",false)],
       ["foundation-finance", async r=>renderTransactions(r.data?.[0]?.transactions,"#foundationFinanceRows")],
-      ["kitchen-finance", async r=>{
-        const el=$("#kitchenFinanceRows"); if(!el)return;
-        const rows=r.data||[];
-        el.innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.kitchen_name)}</td><td>${dateText(x.billing_start_date)} – ${dateText(x.billing_end_date)}</td><td>${rupiah(x.billed_amount)}</td><td>${rupiah(x.verified_amount)}</td><td>${statusText(x.payment_status)}</td></tr>`).join(""):'<tr><td colspan="5" class="table-empty">Belum ada tagihan fee dapur.</td></tr>';
-      }],
+      ["kitchen-finance", async r=>renderKitchenFinance(r)],
       ["personal-balance", async r=>{
         const el=$("#personalLedgerRows"); if(!el)return;
         const rows=r.data?.ledger||[];
@@ -506,7 +603,18 @@ function applyDashboardData(response) {
         el.innerHTML=rows.length?rows.map(x=>`<article class="data-list-item"><strong>${escapeHtml(x.title)}</strong><p>${escapeHtml(x.message)}</p><small>${dateText(x.created_at)} ${x.is_read?"· Dibaca":"· Belum dibaca"}</small>${!x.is_read?` <button class="button button-secondary button-small" data-read-notification="${x.id}">Tandai dibaca</button>`:""}</article>`).join(""):'<p class="table-empty">Tidak ada notifikasi.</p>';
       }]
     ];
-    await Promise.allSettled(tasks.map(async ([key,fn])=>fn(await apiRequest(key))));
+    await Promise.allSettled(tasks.map(async ([key,fn])=>{
+      try {
+        await fn(await apiRequest(key));
+      } catch (error) {
+        if (key === "kitchen-finance") {
+          const target = $("#kitchenFinanceRows");
+          if (target) target.innerHTML = `<tr><td colspan="9" class="table-empty">Belum dapat memuat transaksi dari backend: ${escapeHtml(error.message)}.</td></tr>`;
+          setText("#kitchenFinanceResultCount", "Gagal memuat data");
+        }
+        throw error;
+      }
+    }));
   }
 
   async function loadDashboard() {
@@ -692,6 +800,7 @@ function applyDashboardData(response) {
     initDate();
     initAndroidBackNavigation();
     initEvents();
+    initKitchenFinanceFilters();
     initModals();
     updateNotificationPermissionUI();
     loadDashboard();
