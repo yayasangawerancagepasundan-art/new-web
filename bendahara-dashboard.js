@@ -130,8 +130,21 @@
     setBackendStatus('is-checking', 'Memeriksa sesi');
     const profile = await request(API.me);
     const user = profile?.user || profile;
-    const roles = user.roles || (user.role ? [user.role] : []);
-    const roleCodes = roles.map(role => typeof role === 'string' ? role : role.role_code || role.code);
+
+const roles = Array.isArray(user.roles)
+  ? user.roles
+  : user.role
+    ? [user.role]
+    : [];
+
+const roleCodes = [
+  ...roles.map(role =>
+    typeof role === 'string'
+      ? role
+      : role?.role_code || role?.code
+  ),
+  user.role_code
+].filter(Boolean).map(code => String(code).toUpperCase());
     if (!roleCodes.includes('BENDAHARA')) throw new Error('Akun ini tidak memiliki role BENDAHARA. Akses ditolak.');
     state.profile = user;
     const name = user.full_name || user.name || 'Bendahara Yayasan';
