@@ -12,7 +12,7 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark"><img src="./logo-yayasan.png" alt="Logo Yayasan Gawe Rancage Pasundan"></div>
+        <div class="brand-mark brand-logo-wrap"><img class="brand-logo" src="./logo-yayasan.png" alt="Logo Yayasan Gawe Rancage Pasundan"></div>
         <div class="brand-copy">
           <strong>GAWE RANCAGE</strong>
           <span>YAYASAN PASUNDAN</span>
@@ -172,7 +172,56 @@
         </section>
 
         <section class="page-panel" id="page-kitchen-finance" data-panel="kitchen-finance">
-          <div class="surface-card"><div class="card-heading"><div><h2>Keuangan Dapur</h2><p>Pemantauan laporan dapur dan pembayaran fee kepada Yayasan.</p></div><span class="filter-chip">Sesuai cakupan akses</span></div><div class="table-wrap"><table><thead><tr><th>Dapur</th><th>Periode</th><th>Fee Yayasan</th><th>Pembayaran Terverifikasi</th><th>Status Laporan</th></tr></thead><tbody><tr><td colspan="5"><div class="table-empty">Data dapur akan dimuat dari backend.</div></td></tr></tbody></table></div></div>
+          <div class="surface-card kitchen-finance-shell">
+            <div class="card-heading kitchen-finance-heading">
+              <div><h2>Keuangan Dapur</h2><p>Pemantauan seluruh arus uang masuk, uang keluar, saldo kas, saldo bank/VA, dan kewajiban Fee Yayasan.</p></div>
+              <span class="filter-chip">Hanya lihat · sesuai kewenangan Ketua</span>
+            </div>
+
+            <div class="kitchen-filter-bar" aria-label="Filter transaksi dapur">
+              <label class="filter-field kitchen-select-field"><span>Dapur</span><select id="kitchenFinanceKitchen"><option value="">Semua dapur dalam Yayasan</option></select></label>
+              <label class="filter-field"><span>Dari tanggal</span><input id="kitchenFinanceFrom" type="date"></label>
+              <label class="filter-field"><span>Sampai tanggal</span><input id="kitchenFinanceTo" type="date"></label>
+              <label class="filter-field"><span>Jenis transaksi</span><select id="kitchenFinanceType"><option value="ALL">Semua transaksi</option><option value="IN">Uang masuk</option><option value="OUT">Uang keluar</option></select></label>
+              <label class="filter-field search-field"><span>Cari transaksi</span><input id="kitchenFinanceSearch" type="search" placeholder="Nomor, keterangan, kategori..."></label>
+              <button class="button button-secondary filter-reset" id="kitchenFinanceReset" type="button">Reset</button>
+            </div>
+
+            <div class="kitchen-metric-grid">
+              <article class="metric-card"><div class="metric-top"><span>Total Uang Masuk</span><span class="metric-symbol teal">↓</span></div><strong class="metric-value" data-kitchen-value="total_income">—</strong><small>Transaksi masuk terposting</small></article>
+              <article class="metric-card"><div class="metric-top"><span>Total Uang Keluar</span><span class="metric-symbol amber">↑</span></div><strong class="metric-value" data-kitchen-value="total_expense">—</strong><small>Transaksi keluar terposting</small></article>
+              <article class="metric-card"><div class="metric-top"><span>Saldo Kas Fisik</span><span class="metric-symbol blue">Rp</span></div><strong class="metric-value" data-kitchen-value="cash_balance">—</strong><small>Saldo akun kas dapur</small></article>
+              <article class="metric-card"><div class="metric-top"><span>Saldo Bank / VA</span><span class="metric-symbol violet">▤</span></div><strong class="metric-value" data-kitchen-value="bank_balance">—</strong><small>Saldo akun bank/VA dapur</small></article>
+            </div>
+
+            <div class="kitchen-account-strip">
+              <div><span>Saldo keseluruhan dapur</span><strong data-kitchen-value="total_balance">—</strong></div>
+              <div><span>Jumlah transaksi</span><strong data-kitchen-value="transaction_count">—</strong></div>
+              <div><span>Periode data</span><strong id="kitchenFinancePeriod">Belum tersedia</strong></div>
+            </div>
+
+            <div class="surface-card kitchen-transaction-card">
+              <div class="card-heading"><div><h2>Riwayat Transaksi Dapur</h2><p>Rincian uang masuk dan keluar berdasarkan transaksi yang tercatat dan terposting.</p></div><span class="filter-chip" id="kitchenFinanceResultCount">Menunggu data</span></div>
+              <div class="table-wrap kitchen-transaction-wrap">
+                <table class="kitchen-transaction-table">
+                  <thead><tr><th>Tanggal</th><th>No. Transaksi</th><th>Keterangan</th><th>Kategori / COA</th><th>Akun Kas / Bank</th><th>Uang Masuk</th><th>Uang Keluar</th><th>Status</th><th>Bukti</th></tr></thead>
+                  <tbody id="kitchenFinanceRows"><tr><td colspan="9"><div class="table-empty">Menunggu data transaksi dari backend. Tidak ada transaksi contoh.</div></td></tr></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="surface-card kitchen-fee-card">
+              <div class="card-heading"><div><h2>Rekap Fee Yayasan</h2><p>Fee Yayasan dipantau terpisah dari saldo dan arus kas operasional dapur.</p></div></div>
+              <div class="kitchen-fee-grid">
+                <div><span>Fee terhitung</span><strong data-kitchen-fee="billed_amount">—</strong></div>
+                <div><span>Sudah dibayar</span><strong data-kitchen-fee="paid_amount">—</strong></div>
+                <div><span>Terverifikasi</span><strong data-kitchen-fee="verified_amount">—</strong></div>
+                <div><span>Belum dibayar</span><strong data-kitchen-fee="outstanding_amount">—</strong></div>
+              </div>
+              <div class="table-wrap"><table class="kitchen-fee-table"><thead><tr><th>Dapur</th><th>Periode</th><th>Fee</th><th>Dibayar</th><th>Status</th></tr></thead><tbody id="kitchenFeeRows"><tr><td colspan="5" class="table-empty">Menunggu rekap Fee Yayasan dari backend.</td></tr></tbody></table></div>
+            </div>
+            <p class="kitchen-finance-footnote">Halaman ini bersifat pemantauan. Ketua tidak mengubah transaksi, jurnal, atau pembukuan dapur. Nilai hanya ditampilkan dari data backend; data kosong tidak diganti dengan angka perkiraan.</p>
+          </div>
         </section>
 
         <section class="page-panel" id="page-reports" data-panel="reports">
