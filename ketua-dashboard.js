@@ -11,6 +11,7 @@
   approvalHistory: "/api/ketua/approval-history",
   foundationFinance: "/api/ketua/finance/books",
   kitchenFinance: "/api/ketua/finance/kitchens",
+  kitchens: "/api/ketua/kitchens",
   personalBalance: "/api/ketua/personal-balance",
   withdrawals: "/api/ketua/withdrawals",
   withdrawalHistory: "/api/ketua/withdrawals",
@@ -498,6 +499,30 @@ function applyDashboardData(response) {
     target.innerHTML=rows.map(t=>`<tr><td>${dateText(t.transaction_date)}</td><td>${escapeHtml(t.transaction_number)}</td><td>${escapeHtml(t.description)}</td><td>${escapeHtml(t.transaction_type)}</td><td>${rupiah(t.total_amount)}</td></tr>`).join("");
   }
 
+  function renderKitchenOptions(response) {
+  const select = $("#kitchenFinanceKitchen");
+  if (!select) return;
+
+  const kitchens = Array.isArray(response?.data?.kitchens)
+    ? response.data.kitchens
+    : [];
+
+  const selectedValue = select.value;
+
+  select.innerHTML = `
+    <option value="">Semua dapur dalam Yayasan</option>
+    ${kitchens.map(kitchen => `
+      <option value="${escapeHtml(kitchen.id)}">
+        ${escapeHtml(kitchen.kitchen_name)}
+      </option>
+    `).join("")}
+  `;
+
+  if (kitchens.some(k => String(k.id) === selectedValue)) {
+    select.value = selectedValue;
+  }
+}
+
   // Kontrak frontend Keuangan Dapur: data aktual disediakan backend Worker.
   // Tidak ada fallback angka/transaksi contoh.
   let kitchenFinancePayload = null;
@@ -606,6 +631,7 @@ function applyDashboardData(response) {
       ["approval-history", async r=>renderApprovalRows(r.data,"#approvalHistoryRows",false)],
       ["foundation-finance", async r=>renderTransactions(r.data?.[0]?.transactions,"#foundationFinanceRows")],
       ["kitchen-finance", async r=>renderKitchenFinance(r)],
+      ["kitchens", async r => renderKitchenOptions(r)],
       ["personal-balance", async r=>{
         const el=$("#personalLedgerRows"); if(!el)return;
         const rows=r.data?.ledger||[];
