@@ -1,1 +1,508 @@
+<!doctype html>
+<!DOCTYPE html>
 
+<!DOCTYPE html>
+
+<html lang="id">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="#102b52" name="theme-color"/>
+    <title>Dashboard Bendahara Yayasan</title>
+    <link href="./bendahara-dashboard.css?v=20261118-03" rel="stylesheet"/>
+    <script defer="" src="./bendahara-dashboard.js?v=20261118-03">
+      
+    </script>
+  </head>
+<body>
+  <div class="app-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark brand-logo-wrap">
+      <img alt="Logo Yayasan" class="brand-logo" onerror="this.hidden=true;this.nextElementSibling.hidden=false" src="./logo-yayasan.png"/>
+      <span class="brand-logo-fallback" hidden="">GR</span></div>
+    <div class="brand-copy">
+      <strong>GAWE RANCAGE</strong>
+      <span>YAYASAN PASUNDAN</span>
+    </div>
+    <button aria-label="Tutup menu" class="icon-button sidebar-close" id="sidebarClose">×</button>
+  </div>
+<div class="role-card">
+  <div class="role-avatar">B</div>
+  <div class="role-copy">
+    <span>AREA KERJA</span>
+    <strong>Bendahara Yayasan</strong>
+    <small id="userName">Memuat profil…</small>
+  </div>
+</div>
+<nav aria-label="Navigasi utama" class="navigation">
+  <p class="nav-label">MENU UTAMA</p>
+  <button class="nav-item active" data-page="overview">
+    <span class="nav-icon">▦</span>Dashboard</button>
+  <button class="nav-item" data-page="fee">
+    <span class="nav-icon">✓</span>Verifikasi Fee Yayasan</button>
+  <button class="nav-item" data-page="income">
+    <span class="nav-icon">↓</span>Pemasukan Yayasan</button>
+  <button class="nav-item" data-page="expense">
+    <span class="nav-icon">↑</span>Pengeluaran Yayasan</button>
+  <p class="nav-label">PENGELOLAAN</p>
+  <button class="nav-item" data-page="withdrawals">
+    <span class="nav-icon">⇧</span>Proses Withdraw</button>
+  <button class="nav-item" data-page="history">
+    <span class="nav-icon">◷</span>Riwayat Transaksi</button>
+  <button class="nav-item" data-page="reports">
+    <span class="nav-icon">▥</span>Laporan</button>
+  <p class="nav-label">LAINNYA</p>
+  <button class="nav-item" data-page="notifications">
+    <span class="nav-icon">♧</span>Notifikasi</button>
+  <button class="nav-item" data-page="account">
+    <span class="nav-icon">⚙</span>Keamanan Akun</button>
+</nav>
+<div class="sidebar-footer">
+  <div class="connection-indicator">
+    <span class="status-dot"></span>
+    <span id="connectionText">Menunggu koneksi data</span>
+  </div>
+  <button class="nav-item logout-item" id="logoutButton">
+    <span class="nav-icon">↪</span>Keluar</button>
+  <small>Yayasan Gawe Rancage Pasundan</small>
+</div>
+</aside>
+<main class="main-area">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button aria-label="Buka menu" class="icon-button menu-toggle" id="menuToggle">☰</button>
+      <div>
+        <div class="breadcrumb">Yayasan <span>/</span> 
+          <strong id="breadcrumbCurrent">Dashboard</strong>
+        </div>
+        <p class="topbar-subtitle">Pengelolaan pembukuan internal Yayasan</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button aria-label="Notifikasi" class="icon-button notification-button" data-navigate="notifications">♧</button>
+      <div class="top-user">
+        <div class="top-avatar">B</div>
+        <div>
+          <strong id="topUserName">Bendahara Yayasan</strong>
+          <span>Jajaran Yayasan</span>
+        </div>
+      </div>
+    </div>
+  </header>
+<section class="content">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow" id="pageEyebrow">RINGKASAN YAYASAN</p>
+      <h1 id="pageTitle">Dashboard Bendahara</h1>
+      <p id="pageDescription">Kelola penerimaan, pengeluaran, verifikasi Fee Yayasan, dan kewajiban keuangan Yayasan.</p>
+    </div>
+    <div class="heading-tools">
+      <span class="date-chip" id="currentDate"></span>
+      <div class="backend-status is-checking" id="backendStatus" role="status">
+        <span class="backend-status-dot"></span>
+        <span id="backendStatusText">Memeriksa Backend</span>
+      </div>
+      <button class="button button-secondary" id="refreshButton" type="button">↻ Muat ulang</button>
+    </div>
+  </div>
+<div class="notice notice-info">
+  <span class="notice-icon">i</span>
+  <div>
+    <strong>Ruang lingkup pembukuan Bendahara</strong>
+    <p>Semua penerimaan dan pengeluaran internal dicatat pada buku FOUNDATION. Buku KITCHEN tetap terpisah. Fee baru menjadi penerimaan Yayasan setelah dana benar-benar diterima dan diverifikasi.</p>
+  </div>
+</div>
+<section class="page-panel active" data-panel="overview">
+  <div class="section-title-row">
+    <div>
+      <h2>Ringkasan Keuangan Yayasan</h2>
+      <p>Angka ditampilkan dari transaksi aktual yang terposting.</p>
+    </div>
+  </div>
+  <div class="metric-grid">
+    <article class="metric-card">
+      <div class="metric-top">
+        <span>Saldo Kas Yayasan</span>
+        <span class="metric-symbol blue">Rp</span>
+      </div>
+      <strong class="metric-value" data-metric="cash_balance">—</strong>
+      <small>Menunggu data FOUNDATION</small>
+    </article>
+    <article class="metric-card">
+      <div class="metric-top">
+        <span>Fee Yayasan Terverifikasi</span>
+        <span class="metric-symbol teal">✓</span>
+      </div>
+      <strong class="metric-value" data-metric="verified_fee_total">—</strong>
+      <small>Penerimaan aktual terverifikasi</small>
+    </article>
+    <article class="metric-card">
+      <div class="metric-top">
+        <span>Total Pemasukan</span>
+        <span class="metric-symbol violet">↓</span>
+      </div>
+      <strong class="metric-value" data-metric="period_income">—</strong>
+      <small>Periode berjalan</small>
+    </article>
+    <article class="metric-card">
+      <div class="metric-top">
+        <span>Total Pengeluaran</span>
+        <span class="metric-symbol amber">↑</span>
+      </div>
+      <strong class="metric-value" data-metric="period_expense">—</strong>
+      <small>Periode berjalan</small>
+    </article>
+  </div>
+  <div class="overview-grid">
+    <article class="surface-card">
+      <div class="card-heading">
+        <div>
+          <h2>Fee Yayasan Menunggu Verifikasi</h2>
+          <p>Setoran dapur yang perlu dicocokkan dengan penerimaan kas/bank.</p>
+        </div>
+        <button class="text-button" data-navigate="fee">Buka verifikasi →</button>
+      </div>
+      <div class="empty-state compact">
+        <div class="empty-icon">✓</div>
+        <strong>Data belum dimuat</strong>
+        <p>Daftar pembayaran akan ditampilkan setelah endpoint Bendahara tersedia.</p>
+      </div>
+    </article>
+    <article class="surface-card">
+      <div class="card-heading">
+        <div>
+          <h2>Aktivitas Keuangan Terbaru</h2>
+          <p>Penerimaan dan pengeluaran buku FOUNDATION.</p>
+        </div>
+        <button class="text-button" data-navigate="history">Lihat riwayat →</button>
+      </div>
+      <div class="empty-state compact">
+        <div class="empty-icon">▤</div>
+        <strong>Belum ada data transaksi</strong>
+        <p>Tidak ada transaksi contoh yang ditampilkan.</p>
+      </div>
+    </article>
+  </div>
+</section>
+<section class="page-panel" data-panel="fee">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Verifikasi Penerimaan Fee Yayasan</h2>
+        <p>Periksa setoran dari dapur dan cocokkan dengan mutasi rekening/kas Yayasan.</p>
+      </div><span class="filter-chip">Buku FOUNDATION</span>
+    </div>
+    <div class="notice notice-info">
+      <span class="notice-icon">!</span>
+      <div>
+        <strong>Verifikasi berdasarkan penerimaan aktual</strong>
+        <p>Bukti unggahan PIC saja belum cukup. Konfirmasi hanya jika dana benar-benar masuk. Selisih harus ditandai dan dimintakan klarifikasi.</p>
+      </div>
+    </div>
+    <div class="toolbar-row">
+      <label class="form-field compact-field"
+        >Cari dapur<input id="feeSearch" placeholder="Nama/kode dapur" type="search"/></label>
+      <label class="form-field compact-field"
+        >Periode<input id="feePeriod" type="month"/></label>
+      <span class="helper-text">Filter tampilan akan aktif setelah daftar data terhubung.</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Dapur</th>
+            <th>Periode Fee</th>
+            <th>Fee Terhitung</th>
+            <th>Setoran Dilaporkan</th>
+            <th>Status Verifikasi</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="feeTable">
+          <tr>
+            <td class="table-empty" colspan="6">Menunggu kontrak API daftar pembayaran Fee Yayasan.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="helper-text">Setelah konfirmasi penerimaan, sistem mencatat transaksi pada FOUNDATION dan memproses kredit saldo pribadi sesuai jumlah hari yang dikonfirmasi. Sistem harus mencegah kredit ganda.</p>
+  </div>
+</section>
+<section class="page-panel" data-panel="income">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Pencatatan Pemasukan Yayasan</h2>
+        <p>Catat penerimaan internal selain Fee Yayasan yang benar-benar diterima.</p>
+      </div>
+      <span class="filter-chip">FOUNDATION</span>
+    </div>
+    <form class="entry-form" id="incomeForm">
+      <div class="form-grid">
+        <label class="form-field"
+          >Tanggal penerimaan<input id="incomeForm-transaction-date" name="transaction_date" required="" type="date"/></label>
+        <label class="form-field"
+          >Sumber pemasukan<input id="incomeForm-description" name="description" placeholder="Contoh: sumbangan atau penerimaan lain" required="" type="text"/></label>
+        <label class="form-field"
+          >Nominal (Rp)<input id="incomeForm-amount" min="1" name="amount" placeholder="Masukkan nominal aktual" required="" step="1" type="number"/></label>
+        <label class="form-field"
+          >Akun penerimaan<select id="incomeForm-account-id" name="account_id" required="">
+            <option value="">Pilih akun</option>
+            <option disabled="">Daftar akun menunggu konfigurasi COA FOUNDATION</option>
+          </select>
+        </label>
+        <label class="form-field full"
+          >Keterangan<textarea id="incomeForm-notes" name="notes" placeholder="Uraian penerimaan dan referensi" rows="3"></textarea>
+        </label>
+        <label class="form-field full"
+          >Bukti penerimaan<input accept="image/*,.pdf" disabled="" id="incomeForm-evidence" name="evidence" type="file"/>
+          <small>Unggah bukti akan diaktifkan setelah integrasi penyimpanan R2 tersedia.</small>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="button button-primary" data-api-action="incomeForm" type="submit">Simpan Pemasukan</button>
+        <span class="helper-text">Form disiapkan; penyimpanan belum diaktifkan sebelum API dan pemetaan COA diverifikasi.</span>
+      </div>
+    </form>
+  </div>
+</section>
+<section class="page-panel" data-panel="expense">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Pencatatan Pengeluaran Yayasan</h2>
+        <p>Catat beban internal berdasarkan transaksi aktual dan bukti pendukung.</p>
+      </div>
+      <span class="filter-chip">FOUNDATION</span>
+    </div>
+    <form class="entry-form" id="expenseForm">
+      <div class="form-grid">
+        <label class="form-field"
+          >Tanggal pengeluaran<input id="expenseForm-transaction-date" name="transaction_date" required="" type="date"/></label>
+        <label class="form-field"
+          >Kategori pengeluaran<select id="expenseForm-category-account-id" name="category_account_id" required="">
+            <option value="">Pilih kategori</option>
+            <option disabled="">Kategori mengikuti pemetaan COA FOUNDATION</option>
+          </select>
+        </label>
+        <label class="form-field"
+          >Nominal (Rp)<input id="expenseForm-amount" min="1" name="amount" placeholder="Masukkan nominal aktual" required="" step="1" type="number"/></label>
+        <label class="form-field"
+          >Sumber dana / akun kas-bank<select id="expenseForm-cash-bank-account-id" name="cash_bank_account_id" required="">
+            <option value="">Pilih akun kas/bank</option>
+            <option disabled="">Daftar akun menunggu konfigurasi FOUNDATION</option>
+          </select>
+        </label>
+        <label class="form-field full"
+          >Keterangan<textarea id="expenseForm-notes" name="notes" placeholder="Uraian pengeluaran, penerima, dan referensi" rows="3"></textarea>
+        </label>
+        <label class="form-field full"
+          >Bukti pengeluaran<input accept="image/*,.pdf" disabled="" id="expenseForm-evidence" name="evidence" type="file"/>
+          <small>Unggah bukti akan diaktifkan setelah integrasi penyimpanan R2 tersedia.</small>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="button button-primary" data-api-action="expenseForm" type="submit">Simpan Pengeluaran</button>
+        <span class="helper-text">Pengeluaran yang memerlukan persetujuan harus mengikuti alur persetujuan; Bendahara tidak menggantikan keputusan Ketua/Pembina.</span>
+      </div>
+    </form>
+  </div>
+</section>
+<section class="page-panel" data-panel="withdrawals">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Proses Withdraw Saldo Pribadi</h2>
+        <p>Permintaan withdraw tidak mengurangi saldo. Pengurangan dilakukan setelah transfer aktual dikonfirmasi.</p>
+      </div>
+    </div>
+    <div class="workflow-strip">
+      <div class="workflow-step">
+        <span>1</span>
+        <strong>Permintaan masuk</strong>
+        <small>Saldo belum dipotong</small>
+      </div>
+      <div class="workflow-step">
+        <span>2</span>
+        <strong>Pemeriksaan</strong>
+        <small>Validasi pemohon dan nominal</small>
+      </div>
+      <div class="workflow-step">
+        <span>3</span>
+        <strong>Transfer Bendahara</strong>
+        <small>Transfer ke rekening tujuan</small>
+      </div>
+      <div class="workflow-step">
+        <span>4</span>
+        <strong>Konfirmasi</strong>
+        <small>Unggah bukti; saldo baru berkurang</small>
+      </div>
+    </div>
+    <div class="notice notice-warning">
+      <span class="notice-icon">!</span>
+      <div>
+        <strong>Aturan pemotongan saldo</strong>
+        <p>Pengajuan withdraw bukan pengeluaran dan tidak mengurangi saldo. Pengurangan saldo serta pencatatan beban dilakukan setelah transfer aktual dikonfirmasi oleh Bendahara.</p>
+      </div>
+    </div>
+    <div class="toolbar-row">
+      <label class="form-field compact-field"
+        >Cari pemohon<input id="withdrawSearch" placeholder="Nama pemohon" type="search"/></label>
+      <label class="form-field compact-field"
+        >Status<select id="withdrawStatus">
+          <option value="">Semua status</option>
+          <option>Menunggu</option>
+          <option>Diproses</option>
+          <option>Selesai</option>
+          <option>Ditolak</option>
+        </select>
+      </label>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pemohon</th>
+            <th>Tanggal</th>
+            <th>Nominal</th>
+            <th>Status</th>
+            <th>Bukti Transfer</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawTable">
+          <tr>
+            <td class="table-empty" colspan="6">Menunggu endpoint Bendahara untuk daftar dan proses withdraw.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="page-panel" data-panel="history">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Riwayat Transaksi FOUNDATION</h2>
+        <p>Daftar pemasukan, penerimaan Fee Yayasan, dan pengeluaran yang telah tercatat.</p>
+      </div>
+    </div>
+    <div class="toolbar-row">
+      <label class="form-field compact-field"
+        >Cari transaksi<input id="historySearch" placeholder="Nomor transaksi/keterangan" type="search"/></label>
+      <label class="form-field compact-field"
+        >Dari tanggal<input id="historyFrom" type="date"/></label>
+      <label class="form-field compact-field"
+        >Sampai tanggal<input id="historyTo" type="date"/></label>
+      <label class="form-field compact-field"
+        >Jenis<select id="historyType">
+          <option value="">Semua jenis</option>
+          <option>Pemasukan</option>
+          <option>Fee Yayasan</option>
+          <option>Pengeluaran</option>
+          <option>Withdraw</option>
+        </select>
+      </label>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>No. Transaksi</th>
+            <th>Jenis</th>
+            <th>Keterangan</th>
+            <th>Nominal</th>
+            <th>Status</th>
+            <th>Bukti</th>
+          </tr>
+        </thead>
+        <tbody id="historyTable">
+          <tr>
+            <td class="table-empty" colspan="7">Menunggu endpoint riwayat buku FOUNDATION.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="page-panel" data-panel="reports">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Laporan Keuangan Yayasan</h2>
+        <p>Laporan hanya berdasarkan buku FOUNDATION dan jurnal yang terposting.</p>
+      </div>
+    </div>
+    <div class="report-filter-grid">
+      <label class="form-field"
+        >Jenis laporan<select id="reportKind">
+          <option value="">Pilih jenis laporan</option>
+          <option>Ringkasan pemasukan dan pengeluaran</option>
+          <option>Buku besar FOUNDATION</option>
+          <option>Neraca saldo</option>
+          <option>Laporan posisi keuangan</option>
+          <option>Laporan aktivitas</option>
+        </select>
+      </label>
+      <label class="form-field"
+        >Periode awal<input id="reportFrom" type="date"/></label>
+      <label class="form-field"
+        >Periode akhir<input id="reportTo" type="date"/></label>
+      <div class="form-actions report-actions">
+        <button class="button button-primary" id="previewReport" type="button"> Tampilkan laporan</button>
+        <button class="button button-secondary" id="exportReport" type="button">Ekspor PDF</button>
+      </div>
+    </div>
+    <div class="empty-state">
+      <div class="empty-icon">▥</div>
+      <strong>Laporan belum tersedia</strong>
+      <p>Pilih jenis dan periode setelah data FOUNDATION serta layanan laporan diintegrasikan. Tidak ada angka atau laporan contoh.</p>
+    </div>
+  </div>
+</section>
+<section class="page-panel" data-panel="notifications">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Notifikasi</h2>
+        <p>Pemberitahuan yang berkaitan dengan pekerjaan Bendahara.</p>
+      </div>
+    </div>
+    <div class="empty-state">
+      <strong>Belum ada notifikasi</strong>
+    </div>
+  </div>
+</section>
+<section class="page-panel" data-panel="account">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Keamanan Akun</h2>
+        <p>Informasi akun Bendahara.</p>
+      </div>
+    </div>
+    <div class="account-row">
+      <span>Nama pengguna</span>
+      <strong id="accountName">Memuat…</strong>
+    </div>
+    <div class="account-row">
+      <span>Role</span>
+      <strong>Bendahara</strong>
+    </div>
+  </div>
+</section>
+<footer class="page-footer">
+  <span>© Yayasan Gawe Rancage Pasundan</span>
+  <span>PWA Keuangan SPPG · Dashboard Bendahara</span>
+</footer>
+</section>
+</main>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div aria-live="polite" class="toast" id="toast" role="status">
+    
+  </div>
+</body>
+</html>
