@@ -253,7 +253,6 @@ async function performLogout() {
   sessionStorage.removeItem("sppg_auth_token");
 
   // Langsung kembali ke halaman login.
-  clearSession();
   window.location.replace(LOGIN_PAGE);
 
   // Cabut sesi di server tanpa menahan pengalihan.
