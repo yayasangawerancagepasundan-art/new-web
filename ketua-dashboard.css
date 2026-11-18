@@ -51,21 +51,16 @@ button {
     border-bottom:1px solid rgba(255,255,255,.12);
 }
 .brand-mark {
-    width:48px;
-    height:48px;
-    flex:0 0 48px;
+    width:39px;
+    height:39px;
     border-radius:12px;
     background:#fff;
+    color:var(--navy);
     display:grid;
     place-items:center;
-    overflow:hidden;
-}
-.brand-mark img {
-    display:block;
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    padding:3px;
+    font-family:'Plus Jakarta Sans';
+    font-weight:800;
+    font-size:13px;
 }
 .brand-copy {
     display:flex;
@@ -975,22 +970,214 @@ body.modal-open {
     }
 }
 
-
-/* Navigasi kembali antarhalaman */
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
+/* DP-004 — Keuangan Dapur: frontend-first layout, backend data only */
+.brand-logo-wrap{
+    overflow:hidden;
+    flex:0 0 39px;padding:0
 }
-.back-button[hidden] {
-    display: none !important;
+.brand-logo{
+    display:block;width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+    border-radius:10px;
+    padding:3px
 }
-.back-button:disabled {
-    cursor: default;
-    opacity: .55;
+.kitchen-finance-shell{
+    display:flex;
+    flex-direction:column;
+    gap:16px
 }
-@media (max-width: 640px) {
-    .heading-tools {
-        flex-wrap: wrap;
+.kitchen-finance-heading{margin-bottom:0}
+.kitchen-filter-bar{
+    display:grid;
+    grid-template-columns:minmax(180px,1.4fr) repeat(3,minmax(130px,1fr)) minmax(180px,1.4fr) auto;
+    gap:10px;
+    align-items:end;
+    padding:14px;
+    background:#f8fafd;
+    border:1px solid var(--line);
+    border-radius:10px
+}
+.filter-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:0
+}
+.filter-field span{
+    font-size:10px;
+    font-weight:700;
+    color:#718096
+}
+.filter-field input,.filter-field select{
+    width:100%;
+    min-width:0;
+    height:38px;
+    padding:8px 10px;
+    border:1px solid #dfe6ef;
+    border-radius:8px;
+    background:#fff;
+    color:#40536d;
+    font:inherit;
+    font-size:11px;
+    outline:none
+}
+.filter-field input:focus,.filter-field select:focus{
+    border-color:#7aa8ed;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08)
+}
+.filter-reset{
+    height:38px;
+    white-space:nowrap
+}
+.kitchen-metric-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px
+}
+.kitchen-metric-grid .metric-card{box-shadow:none}
+.kitchen-account-strip{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fbfcfe
+}
+.kitchen-account-strip>div{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding:13px 16px;
+    border-right:1px solid var(--line)
+}
+.kitchen-account-strip>div:last-child{border-right:0}
+.kitchen-account-strip span,.kitchen-fee-grid span{
+    font-size:10px;
+    color:#8190a3
+}
+.kitchen-account-strip strong{
+    font-size:14px;
+    color:#263b57;
+    font-family:'Plus Jakarta Sans',sans-serif
+}
+.kitchen-transaction-card,.kitchen-fee-card{
+    padding:16px 0 0;
+    box-shadow:none
+}
+.kitchen-transaction-card .card-heading,.kitchen-fee-card .card-heading{padding:0 16px}
+.kitchen-transaction-wrap{border-top:1px solid var(--line)}
+.kitchen-transaction-table{min-width:1120px}
+.kitchen-transaction-table th,.kitchen-fee-table th{font-size:9px}
+.kitchen-transaction-table td,.kitchen-fee-table td{
+    font-size:10px;
+    vertical-align:middle
+}
+.transaction-description strong{
+    display:block;
+    color:#40536d;
+    font-weight:600
+}
+.transaction-description small{
+    display:block;
+    margin-top:4px;
+    color:#9aa5b4;
+    font-size:9px
+}
+.amount-in{
+    color:#0f9b78;
+    font-weight:700;
+    white-space:nowrap
+}
+.amount-out{
+    color:#c45b55;
+    font-weight:700;
+    white-space:nowrap
+}
+.evidence-link{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:700;
+    white-space:nowrap
+}
+.evidence-link:hover{text-decoration:underline}
+.kitchen-fee-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    padding:0 16px 15px
+}
+.kitchen-fee-grid>div{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    padding:13px;
+    border:1px solid var(--line);border-radius:9px;
+    background:#fbfcfe
+}
+.kitchen-fee-grid strong{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:15px;
+    color:#263b57
+}
+.kitchen-fee-table{
+    min-width:620px;
+    border-top:1px solid var(--line)
+}
+.kitchen-finance-footnote{
+    margin:0;color:#8a98aa;
+    font-size:10px;
+    line-height:1.6
+}
+@media(max-width:1100px){
+    .kitchen-filter-bar{
+        grid-template-columns:repeat(3,minmax(0,1fr))
+    }
+        .search-field{
+            grid-column:span 2
+        }
+            .kitchen-metric-grid{
+                grid-template-columns:repeat(2,minmax(0,1fr))
+            }
+        }
+@media(max-width:650px){
+    .kitchen-filter-bar{
+        grid-template-columns:1fr 1fr
+    }
+        .kitchen-select-field,.search-field{
+            grid-column:span 2
+        }
+        .filter-reset{
+            grid-column:span 2
+        }
+        .kitchen-metric-grid{
+            grid-template-columns:1fr 1fr
+        }
+        .kitchen-account-strip{
+            grid-template-columns:1fr
+        }
+        .kitchen-account-strip>div{
+            border-right:0;
+            border-bottom:1px solid var(--line)
+        }
+        .kitchen-account-strip>div:last-child{
+            border-bottom:0
+        }
+        .kitchen-fee-grid{
+            grid-template-columns:1fr 1fr
+        }
+        .kitchen-finance-heading{
+            flex-direction:column
+        }
+    }
+@media(max-width:380px){
+    .kitchen-metric-grid{
+        grid-template-columns:1fr
+    }
+    .kitchen-filter-bar{
+        grid-template-columns:1fr
+    }
+    .kitchen-select-field,.search-field,.filter-reset{
+        grid-column:auto
     }
 }
