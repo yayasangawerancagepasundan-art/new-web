@@ -129,13 +129,15 @@
   async function loadProfile() {
     setBackendStatus('is-checking', 'Memeriksa sesi');
     const profile = await request(API.me);
-    const user = profile?.user || profile;
+   const user = profile?.user || profile;
 
-const roles = Array.isArray(user.roles)
-  ? user.roles
-  : user.role
-    ? [user.role]
-    : [];
+const roles = Array.isArray(profile?.roles)
+  ? profile.roles
+  : Array.isArray(user.roles)
+    ? user.roles
+    : user.role
+      ? [user.role]
+      : [];
 
 const roleCodes = [
   ...roles.map(role =>
