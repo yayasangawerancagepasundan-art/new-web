@@ -38,6 +38,7 @@
     fee: ['VERIFIKASI', 'Verifikasi Fee Yayasan', 'Cocokkan setoran dapur dengan penerimaan kas/bank Yayasan.'],
     income: ['PEMBUKUAN FOUNDATION', 'Pemasukan Yayasan', 'Catat penerimaan internal Yayasan yang benar-benar telah diterima.'],
     expense: ['PEMBUKUAN FOUNDATION', 'Pengeluaran Yayasan', 'Catat pengeluaran internal Yayasan berdasarkan transaksi aktual.'],
+    cashBank: ['PENGELOLAAN FOUNDATION','Rekening Kas dan Bank','Kelola rekening kas dan bank Yayasan yang terhubung dengan COA aset FOUNDATION.'],
     withdrawals: ['PEMBAYARAN', 'Proses Withdraw', 'Proses transfer dan konfirmasi pembayaran withdraw saldo pribadi.'],
     history: ['ARSIP TRANSAKSI', 'Riwayat Transaksi', 'Lihat transaksi yang telah tercatat pada buku FOUNDATION.'],
     reports: ['DOKUMEN', 'Laporan', 'Lihat laporan keuangan internal Yayasan.'],
@@ -169,7 +170,7 @@ const roleCodes = [
   async function loadAccounts() {
     const [accounts, cash] = await Promise.all([request(API.accounts), request(API.cashBankAccounts)]);
     state.accounts = accounts.items || accounts || [];
-    state.cashBankAccounts = cash.items || cash || [];
+    state.cashBankAccounts = cash.accounts || cash.items || [];
     const incomeSelect = $('#incomeForm select[name="account_id"]');
     const expenseCoa = $('#expenseForm select[name="category_account_id"]');
     const expenseCash = $('#expenseForm select[name="cash_bank_account_id"]');
@@ -177,6 +178,59 @@ const roleCodes = [
     renderOptions(expenseCoa, state.accounts.filter(a => a.account_type === 'EXPENSE'), 'id', a => `${a.account_code} · ${a.account_name}`, 'Pilih akun beban FOUNDATION');
     renderOptions(expenseCash, state.cashBankAccounts, 'id', a => a.account_name, 'Pilih kas/bank FOUNDATION');
   }
+  async function loadCashBankAccounts() {
+  const [accountResponse, cashResponse] = await Promise.all([
+    request(API.accounts),
+    request(API.cashBankAccounts)
+  ]);
+
+  state.accounts = accountResponse.items || accountResponse || [];
+  state.cashBankAccounts =
+    cashResponse.accounts ||
+    cashResponse.items ||
+    [];
+
+  const coaSelect = $('#cashBank-coa');
+
+  renderOptions(
+    coaSelect,
+    state.accounts.filter(a => a.account_type === 'ASSET'),
+    'id',
+    a => `${a.account_code} · ${a.account_name}`,
+    'Pilih akun aset FOUNDATION'
+  );
+
+  const body = $('#cashBankTable');
+
+  if (!body) return;
+
+  if (!state.cashBankAccounts.length) {
+    body.innerHTML = `
+      <tr>
+        <td colspan="6" class="table-empty">
+          Belum ada rekening kas/bank terdaftar.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  body.innerHTML = state.cashBankAccounts.map(row => `
+    <tr>
+      <td>${safe(row.account_name || '—')}</td>
+      <td>${safe(row.account_type || '—')}</td>
+      <td>${safe(row.bank_name || '—')}</td>
+      <td>${row.account_number_last4
+        ? '•••• ' + safe(row.account_number_last4)
+        : '—'}</td>
+      <td>${safe(row.coa_account_name || row.account_id || '—')}</td>
+      <td>
+        <span class="status-pill ${Number(row.is_active) === 1 ? 'success' : 'danger'}">
+          ${Number(row.is_active) === 1 ? 'AKTIF' : 'NONAKTIF'}
+        </span>
+      </td>
+    </tr>
+  `).join('');
+} 
   async function loadWithdrawals() {
     const data = await request(API.withdrawals);
     state.withdrawals = data.items || data || [];
@@ -200,7 +254,15 @@ const roleCodes = [
   }
   async function loadPageData(page) {
     if (!state.profile) return;
-    const jobs = { overview: [loadDashboard], fee: [loadFee], income: [loadAccounts], expense: [loadAccounts], withdrawals: [loadWithdrawals], history: [loadTransactions], notifications: [loadNotifications] }[page] || [];
+    const jobs = { 
+      overview: [loadDashboard],
+      fee: [loadFee],
+      income: [loadAccounts],
+      expense: [loadAccounts],
+      cashBank: [loadCashBankAccounts],
+      withdrawals: [loadWithdrawals],
+      history: [loadTransactions],
+      notifications: [loadNotifications] }[page] || [];
     const results = await Promise.allSettled(jobs.map(job => job()));
     const failed = results.find(result => result.status === 'rejected');
     if (failed) console.info(`Data halaman ${page} belum tersedia:`, failed.reason?.message || failed.reason);
@@ -230,6 +292,40 @@ const roleCodes = [
     } catch (error) { toast(error.message); }
     finally { submit.disabled = false; }
   }
+  async function submitCashBank(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+
+  if (!form.reportValidity()) return;
+
+  const submit = form.querySelector('[type="submit"]');
+  const formData = new FormData(form);
+
+  const payload = Object.fromEntries(formData.entries());
+  delete payload.id;
+
+  submit.disabled = true;
+
+  try {
+    await request(API.cashBankAccounts, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    toast('Rekening kas/bank berhasil disimpan.');
+
+    form.reset();
+
+    await loadCashBankAccounts();
+
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    submit.disabled = false;
+  }
+}
+  
   async function confirmFee(id) {
     const actual = window.prompt('Masukkan nominal yang benar-benar diterima Yayasan (angka Rupiah):');
     if (actual === null) return;
@@ -278,6 +374,8 @@ const roleCodes = [
     $('#sidebarBackdrop')?.addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.remove('show'); });
     $('#incomeForm')?.addEventListener('submit', event => submitEntry(event,'income'));
     $('#expenseForm')?.addEventListener('submit', event => submitEntry(event,'expense'));
+    $('#cashBankForm')?.addEventListener('submit', submitCashBank);
+    $('#refreshCashBank')?.addEventListener('click', () => {loadCashBankAccounts().catch(error => toast(error.message)); });
     $('#previewReport')?.addEventListener('click', loadReport);
     $('#exportReport')?.addEventListener('click', loadReport);
     $('#feeTable')?.addEventListener('click', event => { const button=event.target.closest('[data-fee-verify]'); if(button) confirmFee(button.dataset.feeVerify); });
