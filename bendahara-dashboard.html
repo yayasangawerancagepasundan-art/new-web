@@ -45,6 +45,9 @@
     <span class="nav-icon">↓</span>Pemasukan Yayasan</button>
   <button class="nav-item" data-page="expense">
     <span class="nav-icon">↑</span>Pengeluaran Yayasan</button>
+  <button class="nav-item" data-page="cashBank">
+  <span class="nav-icon">▤</span>Rekening Kas dan Bank
+</button>
   <p class="nav-label">PENGELOLAAN</p>
   <button class="nav-item" data-page="withdrawals">
     <span class="nav-icon">⇧</span>Proses Withdraw</button>
@@ -309,6 +312,109 @@
     </form>
   </div>
 </section>
+
+  <section class="page-panel" data-panel="cashBank">
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Rekening Kas dan Bank Yayasan</h2>
+        <p>Pengelolaan rekening yang terhubung dengan COA aset buku FOUNDATION.</p>
+      </div>
+      <span class="filter-chip">FOUNDATION</span>
+    </div>
+
+    <form id="cashBankForm" class="entry-form">
+      <input type="hidden" name="id" id="cashBank-id">
+
+      <div class="form-grid">
+        <label class="form-field">
+          Nama rekening
+          <input name="account_name" required type="text"
+            placeholder="Contoh: Kas Operasional Yayasan">
+        </label>
+
+        <label class="form-field">
+          Akun COA aset
+          <select name="account_id" id="cashBank-coa" required>
+            <option value="">Pilih akun aset FOUNDATION</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          Jenis rekening
+          <select name="account_type" required>
+            <option value="">Pilih jenis rekening</option>
+            <option value="CASH">Kas</option>
+            <option value="BANK">Bank</option>
+            <option value="VIRTUAL_ACCOUNT">Virtual Account</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          Nama bank
+          <input name="bank_name" type="text"
+            placeholder="Contoh: BCA">
+        </label>
+
+        <label class="form-field">
+          Nomor rekening
+          <input name="account_number" type="text"
+            inputmode="numeric" placeholder="Masukkan nomor rekening">
+        </label>
+
+        <label class="form-field">
+          Nama pemilik rekening
+          <input name="account_holder" type="text"
+            placeholder="Nama pemilik rekening">
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="button button-primary" type="submit">
+          Simpan Rekening
+        </button>
+        <button class="button button-secondary" type="reset">
+          Bersihkan
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="surface-card">
+    <div class="card-heading">
+      <div>
+        <h2>Daftar Rekening</h2>
+        <p>Rekening yang terdaftar pada pembukuan internal Yayasan.</p>
+      </div>
+      <button class="button button-secondary" id="refreshCashBank" type="button">
+        Muat Ulang
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nama Rekening</th>
+            <th>Jenis</th>
+            <th>Bank</th>
+            <th>Nomor</th>
+            <th>Akun COA</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="cashBankTable">
+          <tr>
+            <td colspan="6" class="table-empty">
+              Data rekening akan dimuat dari backend.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+  
 <section class="page-panel" data-panel="withdrawals">
   <div class="surface-card">
     <div class="card-heading">
